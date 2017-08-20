@@ -1,6 +1,7 @@
 package main
 
 import (
+	"html/template"
 	"net/http"
 
 	"github.com/dotzero/pad/service"
@@ -18,11 +19,17 @@ type Configuration struct {
 	Port        string `default:"8080"`
 }
 
-// PadApp is a Pad api
+// PadApp is a Pad app
 type PadApp struct {
 	Config *Configuration
 	Router *chi.Mux
 	Redis  *redis.Client
+}
+
+// PadData is a Pad data
+type PadData struct {
+	Name    string
+	Content string
 }
 
 func (c *PadApp) prefixed(key string) string {
@@ -74,8 +81,13 @@ func main() {
 
 	app.Router.Route("/{name}", func(r chi.Router) {
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			name := chi.URLParam(r, "name")
-			w.Write([]byte(name))
+			d := PadData{
+				Name:    chi.URLParam(r, "name"),
+				Content: chi.URLParam(r, "name"),
+			}
+			t := template.New("main")
+			t, _ = t.ParseFiles("templates/main.html")
+			t.Execute(w, d)
 		})
 		r.Post("/", func(w http.ResponseWriter, r *http.Request) {
 			context := r.Form.Get("context")
