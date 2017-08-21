@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
@@ -34,6 +35,11 @@ type PadApp struct {
 type PadData struct {
 	Name    string
 	Content string
+}
+
+type Response struct {
+	Message string `json:"message"`
+	PadName string `json:"padname"`
 }
 
 func (c *PadApp) prefixed(key string) string {
@@ -103,8 +109,14 @@ func main() {
 			t.Execute(w, d)
 		})
 		r.Post("/", func(w http.ResponseWriter, r *http.Request) {
+			name := chi.URLParam(r, "name")
 			context := r.Form.Get("context")
-			w.Write([]byte(context))
+			_ = app.Redis.Set(name, context, 0).Err()
+			res, _ := json.Marshal(Response{
+				Message: "ok",
+				PadName: name,
+			})
+			w.Write(res)
 		})
 	})
 
