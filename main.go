@@ -2,7 +2,11 @@ package main
 
 import (
 	"html/template"
+	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/dotzero/pad/service"
 	"github.com/go-chi/chi"
@@ -79,6 +83,10 @@ func main() {
 		http.Redirect(w, r, e, 301)
 	})
 
+	workDir, _ := os.Getwd()
+	filesDir := filepath.Join(workDir, "static")
+	FileServer(app.Router, "/static", http.Dir(filesDir))
+
 	app.Router.Route("/{name}", func(r chi.Router) {
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			d := PadData{
@@ -95,8 +103,28 @@ func main() {
 		})
 	})
 
-	err := http.ListenAndServe(":"+cfg.Port, app.Router)
-	if err != nil {
+	log.Printf("Redis uri: %s\n", cfg.RedisURI)
+	log.Printf("Redis prefix: %s\n", cfg.RedisPrefix)
+	log.Printf("Listen at: http://0.0.0.0:%s\n", cfg.Port)
+	if err := http.ListenAndServe(":"+cfg.Port, app.Router); err != nil {
 		panic(err)
 	}
+}
+
+func FileServer(r chi.Router, path string, root http.FileSystem) {
+	if strings.ContainsAny(path, "{}*") {
+		panic("FileServer does not permit URL parameters.")
+	}
+
+	fs := http.StripPrefix(path, http.FileServer(root))
+
+	if path != "/" && path[len(path)-1] != '/' {
+		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
+		path += "/"
+	}
+	path += "*"
+
+	r.Get(path, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fs.ServeHTTP(w, r)
+	}))
 }
