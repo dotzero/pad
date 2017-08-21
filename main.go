@@ -76,49 +76,15 @@ func main() {
 	app.Router.Use(middleware.Recoverer)
 	app.Router.Use(middleware.RedirectSlashes)
 
-	app.Router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		cnt, err := app.GetNextCounter()
-		if err != nil {
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			return
-		}
-
-		h := service.NewHash(app.Config.Salt)
-		e, _ := h.EncodeInt64([]int64{cnt})
-
-		http.Redirect(w, r, e, 301)
+	app.Router.Get("/", routeMain)
+	app.Router.Route("/{name}", func(r chi.Router) {
+		r.Get("/", routeLoad)
+		r.Post("/", routeSave)
 	})
 
 	workDir, _ := os.Getwd()
 	filesDir := filepath.Join(workDir, "static")
-	FileServer(app.Router, "/static", http.Dir(filesDir))
-
-	app.Router.Route("/{name}", func(r chi.Router) {
-		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			name := chi.URLParam(r, "name")
-			value, err := app.Redis.Get(name).Result()
-			if err != nil {
-				value = ""
-			}
-			d := PadData{
-				Name:    name,
-				Content: value,
-			}
-			t := template.New("main")
-			t, _ = t.ParseFiles("templates/main.html")
-			t.Execute(w, d)
-		})
-		r.Post("/", func(w http.ResponseWriter, r *http.Request) {
-			name := chi.URLParam(r, "name")
-			context := r.Form.Get("context")
-			_ = app.Redis.Set(name, context, 0).Err()
-			res, _ := json.Marshal(Response{
-				Message: "ok",
-				PadName: name,
-			})
-			w.Write(res)
-		})
-	})
+	routeStatic(app.Router, "/static", http.Dir(filesDir))
 
 	log.Printf("Redis uri: %s\n", cfg.RedisURI)
 	log.Printf("Redis prefix: %s\n", cfg.RedisPrefix)
@@ -128,7 +94,48 @@ func main() {
 	}
 }
 
-func FileServer(r chi.Router, path string, root http.FileSystem) {
+func routeMain(w http.ResponseWriter, r *http.Request) {
+	cnt, err := app.GetNextCounter()
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	h := service.NewHash(app.Config.Salt)
+	e, _ := h.EncodeInt64([]int64{cnt})
+
+	http.Redirect(w, r, e, 301)
+}
+
+func routeLoad(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	value, err := app.Redis.Get(name).Result()
+	if err != nil {
+		value = ""
+	}
+	d := PadData{
+		Name:    name,
+		Content: value,
+	}
+
+	t := template.New("main")
+	t, _ = t.ParseFiles("templates/main.html")
+	t.Execute(w, d)
+}
+
+func routeSave(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	name := chi.URLParam(r, "name")
+	context := r.Form.Get("t")
+	_ = app.Redis.Set(name, context, 0).Err()
+	res, _ := json.Marshal(Response{
+		Message: "ok",
+		PadName: name,
+	})
+	w.Write(res)
+}
+
+func routeStatic(r chi.Router, path string, root http.FileSystem) {
 	if strings.ContainsAny(path, "{}*") {
 		panic("FileServer does not permit URL parameters.")
 	}
