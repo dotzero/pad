@@ -89,9 +89,14 @@ func main() {
 
 	app.Router.Route("/{name}", func(r chi.Router) {
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+			name := chi.URLParam(r, "name")
+			value, err := app.Redis.Get(name).Result()
+			if err != nil {
+				value = ""
+			}
 			d := PadData{
-				Name:    chi.URLParam(r, "name"),
-				Content: chi.URLParam(r, "name"),
+				Name:    name,
+				Content: value,
 			}
 			t := template.New("main")
 			t, _ = t.ParseFiles("templates/main.html")
