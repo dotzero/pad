@@ -14,9 +14,8 @@ func NewHashID(salt string) *HashID {
 	hd := hashids.NewData()
 	hd.Salt = salt
 	hd.MinLength = 3
-	h, _ := hashids.NewWithData(hd)
 	return &HashID{
-		Client: h,
+		Client: hashids.NewWithData(hd),
 	}
 }
 

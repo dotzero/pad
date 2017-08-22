@@ -60,13 +60,11 @@ func (a *App) initializeRoutes() {
 func (a *App) initializeStatic(pwd string) {
 	static := filepath.Join(pwd, "static")
 
-	// a.Router.Get("/favicon.ico", a.createPad)
+	a.Router.Get("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, filepath.Join(static, "/favicon.ico"))
+	})
 
-	func faviconHandler(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "relative/path/to/favicon.ico")
-	}
-
-	handleStatics(a.Router, "/static", http.Dir(static))
+	staticHandler(a.Router, "/static", http.Dir(static))
 }
 
 func (a *App) createPad(w http.ResponseWriter, r *http.Request) {
@@ -104,10 +102,6 @@ func (a *App) updatePad(w http.ResponseWriter, r *http.Request) {
 		"padname": padname,
 	})
 }
-
-// func faviconHandler(w http.ResponseWriter, r *http.Request) {
-// 	http.ServeFile(w, r, "relative/path/to/favicon.ico")
-// }
 
 func staticHandler(r chi.Router, path string, root http.FileSystem) {
 	fs := http.StripPrefix(path, http.FileServer(root))
