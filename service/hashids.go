@@ -4,13 +4,24 @@ import (
 	hashids "github.com/speps/go-hashids"
 )
 
-var h *hashids.HashID
+// HashID is a client to the HashID
+type HashID struct {
+	Client *hashids.HashID
+}
 
-// NewHash returns a HashID client
-func NewHash(salt string) *hashids.HashID {
+// NewHashID returns a HashID client
+func NewHashID(salt string) *HashID {
 	hd := hashids.NewData()
 	hd.Salt = salt
 	hd.MinLength = 3
-	h = hashids.NewWithData(hd)
-	return h
+	h, _ := hashids.NewWithData(hd)
+	return &HashID{
+		Client: h,
+	}
+}
+
+// Encode returns encoded version of number
+func (c *HashID) Encode(num int64) string {
+	e, _ := c.Client.EncodeInt64([]int64{num})
+	return e
 }
