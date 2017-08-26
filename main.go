@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"os"
 
 	"github.com/kelseyhightower/envconfig"
@@ -24,6 +26,8 @@ type Configuration struct {
 	Port        string `default:"8080"`
 }
 
+var flagVersion = flag.Bool("version", false, "Show the version number and information")
+
 func main() {
 	var cfg Configuration
 	if err := envconfig.Process("pad", &cfg); err != nil {
@@ -33,6 +37,15 @@ func main() {
 	workDir, err := os.Getwd()
 	if err != nil {
 		panic(err)
+	}
+
+	flag.Parse()
+	if *flagVersion {
+		// If -version was passed
+		fmt.Println("Version:", Version)
+		fmt.Println("Commit hash:", CommitHash)
+		fmt.Println("Compile date", CompileDate)
+		os.Exit(0)
 	}
 
 	app := &App{}

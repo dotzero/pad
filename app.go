@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -26,6 +27,7 @@ type Pad struct {
 	Content string
 }
 
+// Initialize is init the App
 func (a *App) Initialize(cfg *Configuration, pwd string) {
 	a.Config = cfg
 	a.Router = chi.NewRouter()
@@ -36,8 +38,9 @@ func (a *App) Initialize(cfg *Configuration, pwd string) {
 	a.initializeStatic(pwd)
 }
 
+// Run starts the listener
 func (a *App) Run() {
-	log.Printf("Listen at: 0.0.0.0:%s\n", a.Config.Port)
+	fmt.Println("Listen at: 0.0.0.0:" + a.Config.Port)
 	log.Fatal(http.ListenAndServe(":"+a.Config.Port, a.Router))
 }
 
