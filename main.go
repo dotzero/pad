@@ -6,6 +6,16 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
+var (
+	// Version is the version number or commit hash
+	// These variables should be set by the linker when compiling
+	Version = "0.0.0-unknown"
+	// CommitHash is the git hash of last commit
+	CommitHash = "Unknown"
+	// CompileDate is the date of build
+	CompileDate = "Unknown"
+)
+
 // Configuration is a Pad configuration
 type Configuration struct {
 	RedisURI    string `envconfig:"redis_uri" default:"redis://localhost:6379/0"`
