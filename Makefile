@@ -16,10 +16,10 @@ build: fmt
 	$(GO) build -ldflags=$(LDFLAGS) -o $(BINARY_PATH)
 
 install:
-	$(GO) build -ldflags=$(LDFLAGS)
+	$(GO) install -ldflags=$(LDFLAGS)
 
 test:
-	$(GO) test -v $($(GO) list ./... | grep -v /vendor/)
+	$(GO) test -v $(shell $(GO) list ./... | grep -v /vendor/)
 
 clean:
 	$(GO) clean
