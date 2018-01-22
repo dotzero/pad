@@ -13,3 +13,7 @@
 [[constraint]]
   name = "github.com/speps/go-hashids"
   version = "1.0.0"
+
+[[constraint]]
+  name = "github.com/alicebob/miniredis"
+  version = "2.3.0"

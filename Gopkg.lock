@@ -2,6 +2,18 @@
 
 
 [[projects]]
+  name = "github.com/alicebob/miniredis"
+  packages = [".","server"]
+  revision = "aefbaa72e488a5bbca434ab16c56cdffecbdfd47"
+  version = "2.3.0"
+
+[[projects]]
+  name = "github.com/garyburd/redigo"
+  packages = ["internal","redis"]
+  revision = "d1ed5c67e5794de818ea85e6b522fda02623a484"
+  version = "v1.4.0"
+
+[[projects]]
   name = "github.com/go-chi/chi"
   packages = [".","middleware"]
   revision = "e83ac2304db3c50cf03d96a2fcd39009d458bc35"
@@ -25,9 +37,15 @@
   revision = "d1d57a886aa7e3ef6092b70ceab077e35ee8e0ce"
   version = "v1.0.0"
 
+[[projects]]
+  branch = "master"
+  name = "github.com/yuin/gopher-lua"
+  packages = [".","ast","parse","pm"]
+  revision = "7d7bc8747e3f614c5c587729a341fe7d8903cdb8"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8185f86ad616e4c07e08631f7acd91992c31a29fd7b4548e5edf40959adc0b6b"
+  inputs-digest = "1252e058d6a4c71e9c69de21719ecf82d3710e5f7dd338af2ceb4e47f3f7d511"
   solver-name = "gps-cdcl"
   solver-version = 1

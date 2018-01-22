@@ -27,7 +27,7 @@ func NewRedisClient(uri string, prefix string) *Redis {
 
 // GetNextCounter returns next number of counter from the Redis Server
 func (c *Redis) GetNextCounter() (int64, error) {
-	val, err := c.Client.Incr(c.prefixed("counter")).Result()
+	val, err := c.Client.Incr(c.prefixed("#counter#")).Result()
 	if err != nil {
 		return 0, err
 	}
