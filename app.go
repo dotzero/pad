@@ -32,7 +32,7 @@ func (a *App) Initialize(cfg *Configuration, pwd string) {
 	a.Config = cfg
 	a.Router = chi.NewRouter()
 	a.Redis = service.NewRedisClient(cfg.RedisURI, cfg.RedisPrefix)
-	a.HashID = service.NewHashID(cfg.Salt)
+	a.HashID = service.NewHashID(cfg.Salt, 3)
 	a.initializeMiddlewares()
 	a.initializeRoutes()
 	a.initializeStatic(pwd)
@@ -40,6 +40,8 @@ func (a *App) Initialize(cfg *Configuration, pwd string) {
 
 // Run starts the listener
 func (a *App) Run() {
+	fmt.Printf("=> RedisURI: %s\n", a.Config.RedisURI)
+	fmt.Printf("=> RedisPrefix: %s\n", a.Config.RedisPrefix)
 	fmt.Println("Listen at: 0.0.0.0:" + a.Config.Port)
 	log.Fatal(http.ListenAndServe(":"+a.Config.Port, a.Router))
 }
@@ -53,10 +55,10 @@ func (a *App) initializeMiddlewares() {
 }
 
 func (a *App) initializeRoutes() {
-	a.Router.Get("/", a.createPad)
+	a.Router.Get("/", a.newPad)
 	a.Router.Route("/{padname}", func(r chi.Router) {
 		r.Get("/", a.getPad)
-		r.Post("/", a.updatePad)
+		r.Post("/", a.setPad)
 	})
 }
 
@@ -70,7 +72,7 @@ func (a *App) initializeStatic(pwd string) {
 	staticHandler(a.Router, "/static", http.Dir(static))
 }
 
-func (a *App) createPad(w http.ResponseWriter, r *http.Request) {
+func (a *App) newPad(w http.ResponseWriter, r *http.Request) {
 	cnt, err := a.Redis.GetNextCounter()
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -93,14 +95,29 @@ func (a *App) getPad(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (a *App) updatePad(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
+func (a *App) setPad(w http.ResponseWriter, r *http.Request) {
+	var err error
+	err = r.ParseForm()
+	if err != nil {
+		respondWithJSON(w, http.StatusBadRequest, map[string]string{
+			"message": "error",
+		})
+		return
+	}
+
 	padname := chi.URLParam(r, "padname")
 	content := r.Form.Get("t")
 
-	a.Redis.SetPad(padname, content)
+	err = a.Redis.SetPad(padname, content)
+	if err != nil {
+		respondWithJSON(w, http.StatusBadRequest, map[string]string{
+			"message": "error",
+			"padname": padname,
+		})
+		return
+	}
 
-	respondWithJSON(w, 200, map[string]string{
+	respondWithJSON(w, http.StatusOK, map[string]string{
 		"message": "ok",
 		"padname": padname,
 	})
