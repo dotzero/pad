@@ -4,14 +4,14 @@
 [[projects]]
   name = "github.com/go-chi/chi"
   packages = [".","middleware"]
-  revision = "25354a53cca531cb2efd3f1d3c565d90ff04d802"
-  version = "v3.1.5"
+  revision = "e83ac2304db3c50cf03d96a2fcd39009d458bc35"
+  version = "v3.3.2"
 
 [[projects]]
   name = "github.com/go-redis/redis"
   packages = [".","internal","internal/consistenthash","internal/hashtag","internal/pool","internal/proto"]
-  revision = "19c1c2272e00c1aaa903cf574c746cd449f9cd3c"
-  version = "v6.5.7"
+  revision = "4021ace05686f632ff17fd824bbed229fc474cf8"
+  version = "v6.8.2"
 
 [[projects]]
   name = "github.com/kelseyhightower/envconfig"
@@ -28,6 +28,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "67b32e4beb715a8665c41537e73884ba3556d8daf8feb0137407b2b63ee3cb4d"
+  inputs-digest = "8185f86ad616e4c07e08631f7acd91992c31a29fd7b4548e5edf40959adc0b6b"
   solver-name = "gps-cdcl"
   solver-version = 1

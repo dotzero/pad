@@ -10,10 +10,10 @@ type HashID struct {
 }
 
 // NewHashID returns a HashID client
-func NewHashID(salt string) *HashID {
+func NewHashID(salt string, length int) *HashID {
 	hd := hashids.NewData()
 	hd.Salt = salt
-	hd.MinLength = 3
+	hd.MinLength = length
 	return &HashID{
 		Client: hashids.NewWithData(hd),
 	}

@@ -1,10 +1,10 @@
 [[constraint]]
   name = "github.com/go-chi/chi"
-  version = "3.1.5"
+  version = "3.3.2"
 
 [[constraint]]
   name = "github.com/go-redis/redis"
-  version = "6.5.7"
+  version = "6.8.2"
 
 [[constraint]]
   name = "github.com/kelseyhightower/envconfig"
