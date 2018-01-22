@@ -85,7 +85,11 @@ func (a *App) newPad(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) getPad(w http.ResponseWriter, r *http.Request) {
 	padname := chi.URLParam(r, "padname")
-	content := a.Redis.GetPad(padname)
+	content, err := a.Redis.GetPad(padname)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
 
 	tpl := template.New("main")
 	tpl, _ = tpl.ParseFiles("templates/main.html")

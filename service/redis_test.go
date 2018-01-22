@@ -53,7 +53,9 @@ func TestGetPad(t *testing.T) {
 
 	r := NewRedisClient(fmt.Sprintf("redis://%s/0", s.Addr()), "prefix")
 
-	equals(t, "bar", r.GetPad("foo"))
+	act, err := r.GetPad("foo")
+	ok(t, err)
+	equals(t, "bar", act)
 }
 
 func TestSetPad(t *testing.T) {
@@ -64,7 +66,8 @@ func TestSetPad(t *testing.T) {
 	defer s.Close()
 
 	r := NewRedisClient(fmt.Sprintf("redis://%s/0", s.Addr()), "prefix")
-	r.SetPad("foo", "bar")
+	err = r.SetPad("foo", "bar")
+	ok(t, err)
 
 	act, _ := s.Get("prefix:foo")
 	equals(t, "bar", act)

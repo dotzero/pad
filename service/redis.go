@@ -36,9 +36,9 @@ func (c *Redis) GetNextCounter() (int64, error) {
 }
 
 // GetPad returns a content of pad from the Redis Server
-func (c *Redis) GetPad(name string) string {
-	value, _ := c.Client.Get(c.prefixed(name)).Result()
-	return value
+func (c *Redis) GetPad(name string) (string, error) {
+	value, err := c.Client.Get(c.prefixed(name)).Result()
+	return value, err
 }
 
 // SetPad update a content of pad in the Redis Server
