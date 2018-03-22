@@ -2,28 +2,19 @@
 
 
 [[projects]]
-  name = "github.com/alicebob/miniredis"
-  packages = [".","server"]
-  revision = "aefbaa72e488a5bbca434ab16c56cdffecbdfd47"
-  version = "2.3.0"
-
-[[projects]]
-  name = "github.com/garyburd/redigo"
-  packages = ["internal","redis"]
-  revision = "d1ed5c67e5794de818ea85e6b522fda02623a484"
-  version = "v1.4.0"
+  name = "github.com/boltdb/bolt"
+  packages = ["."]
+  revision = "2f1ce7a837dcb8da3ec595b1dac9d0632f0f99e8"
+  version = "v1.3.1"
 
 [[projects]]
   name = "github.com/go-chi/chi"
-  packages = [".","middleware"]
+  packages = [
+    ".",
+    "middleware"
+  ]
   revision = "e83ac2304db3c50cf03d96a2fcd39009d458bc35"
   version = "v3.3.2"
-
-[[projects]]
-  name = "github.com/go-redis/redis"
-  packages = [".","internal","internal/consistenthash","internal/hashtag","internal/pool","internal/proto"]
-  revision = "4021ace05686f632ff17fd824bbed229fc474cf8"
-  version = "v6.8.2"
 
 [[projects]]
   name = "github.com/kelseyhightower/envconfig"
@@ -39,13 +30,13 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/yuin/gopher-lua"
-  packages = [".","ast","parse","pm"]
-  revision = "7d7bc8747e3f614c5c587729a341fe7d8903cdb8"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  revision = "c488ab1dd8481ef762f96a79a9577c27825be697"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1252e058d6a4c71e9c69de21719ecf82d3710e5f7dd338af2ceb4e47f3f7d511"
+  inputs-digest = "4a7687ce2021656764cb89ee0abb7097f7cc0f2c4cef2b3709f60a86019f10d8"
   solver-name = "gps-cdcl"
   solver-version = 1
