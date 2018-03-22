@@ -26,7 +26,9 @@ type Configuration struct {
 	Port string `default:"8080"`
 }
 
-var flagVersion = flag.Bool("version", false, "Show the version number and information")
+var flagSet = flag.NewFlagSet("", flag.ExitOnError)
+var flagSilent = flagSet.Bool("silent", false, "Operate without emitting any output")
+var flagVersion = flagSet.Bool("version", false, "Show the version number and information")
 
 func main() {
 	var cfg Configuration
@@ -34,7 +36,7 @@ func main() {
 		panic(err)
 	}
 
-	flag.Parse()
+	flagSet.Parse(os.Args[1:])
 	if *flagVersion {
 		// If -version was passed
 		fmt.Println("Version:", Version)
@@ -42,11 +44,19 @@ func main() {
 		fmt.Println("Compile date", CompileDate)
 		os.Exit(0)
 	}
+	if *flagSilent == false {
+		// If -version was not passed
+		fmt.Println("Configuration")
+		fmt.Println("=> DB:", cfg.DB)
+		fmt.Println("=> Salt:", cfg.Salt)
+		fmt.Println("=> Host:", cfg.Host)
+		fmt.Println("=> Port:", cfg.Port)
+	}
 
 	app, err := NewPadApp(&cfg)
 	if err != nil {
 		panic(err)
 	}
 	app.Initialize(&cfg)
-	app.Run()
+	app.Run(*flagSilent)
 }

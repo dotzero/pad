@@ -43,9 +43,11 @@ func (a *App) Initialize(cfg *Configuration) {
 }
 
 // Run the listener
-func (a *App) Run() {
+func (a *App) Run(flagSilent bool) {
 	addr := a.Config.Host + ":" + a.Config.Port
-	fmt.Println("Listen at: " + addr)
+	if flagSilent == false {
+		fmt.Println("Listen at: http://" + addr)
+	}
 	log.Fatal(http.ListenAndServe(addr, a.Router))
 }
 
