@@ -20,10 +20,10 @@ var (
 
 // Configuration is a Pad configuration
 type Configuration struct {
-	RedisURI    string `envconfig:"redis_uri" default:"redis://localhost:6379/0"`
-	RedisPrefix string `envconfig:"redis_prefix" default:"pad"`
-	Salt        string `default:"salt"`
-	Port        string `default:"8080"`
+	DB   string `default:"pad.db"`
+	Salt string `default:""`
+	Host string `default:"0.0.0.0"`
+	Port string `default:"8080"`
 }
 
 var flagVersion = flag.Bool("version", false, "Show the version number and information")
@@ -31,11 +31,6 @@ var flagVersion = flag.Bool("version", false, "Show the version number and infor
 func main() {
 	var cfg Configuration
 	if err := envconfig.Process("pad", &cfg); err != nil {
-		panic(err)
-	}
-
-	workDir, err := os.Getwd()
-	if err != nil {
 		panic(err)
 	}
 
@@ -48,7 +43,10 @@ func main() {
 		os.Exit(0)
 	}
 
-	app := &App{}
-	app.Initialize(&cfg, workDir)
+	app, err := NewPadApp(&cfg)
+	if err != nil {
+		panic(err)
+	}
+	app.Initialize(&cfg)
 	app.Run()
 }
