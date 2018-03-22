@@ -6,7 +6,7 @@
 Pad is a standalone version of cloud notepad. Allows to share any text data by unique links.
 Written in Go and Bolt as embedded key/value database.
 
-![](https://raw.githubusercontent.com/dotzero/pad/master/static/images/pad.png)
+![](https://raw.githubusercontent.com/dotzero/pad/master/static/images/screenshot.png)
 
 ## Installation
 
