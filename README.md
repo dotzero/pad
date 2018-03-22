@@ -1,5 +1,6 @@
 # Pad
 
+[![Build Status](https://travis-ci.org/dotzero/pad.svg?branch=master)](https://travis-ci.org/dotzero/pad)
 [![Go Report Card](https://goreportcard.com/badge/github.com/dotzero/pad)](https://goreportcard.com/report/github.com/dotzero/pad)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/dotzero/pad/blob/master/LICENSE)
 
