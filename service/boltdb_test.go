@@ -2,6 +2,7 @@ package service
 
 import (
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"testing"
 
@@ -21,12 +22,12 @@ func TestSetPad(t *testing.T) {
 	backend := newTestBackend()
 	defer backend.db.Close()
 
-	err := backend.SetPad("foo", "bar")
-	ok(t, err)
+	exp := randomString(10)
+	ok(t, backend.SetPad("foo", exp))
 
 	if err := backend.db.View(func(tx *bolt.Tx) error {
 		v := tx.Bucket(backend.bucketPads).Get([]byte("foo"))
-		equals(t, []byte("bar"), v)
+		equals(t, []byte(exp), v)
 		return nil
 	}); err != nil {
 		t.Fatalf("unexpected error: %s", err)
@@ -37,21 +38,21 @@ func TestGetPad_Exists(t *testing.T) {
 	backend := newTestBackend()
 	defer backend.db.Close()
 
-	err := backend.SetPad("foo", "bar")
-	ok(t, err)
+	exp := randomString(10)
+	ok(t, backend.SetPad("foo", exp))
 
-	v, err := backend.GetPad("foo")
+	act, err := backend.GetPad("foo")
 	ok(t, err)
-	equals(t, "bar", v)
+	equals(t, exp, act)
 }
 
 func TestGetPad_NotExists(t *testing.T) {
 	backend := newTestBackend()
 	defer backend.db.Close()
 
-	v, err := backend.GetPad("foo")
+	act, err := backend.GetPad("foo")
 	ok(t, err)
-	equals(t, "", v)
+	equals(t, "", act)
 }
 
 func TestGetNextCounter(t *testing.T) {
@@ -99,4 +100,13 @@ func tempfile() string {
 		panic(err)
 	}
 	return f.Name()
+}
+
+func randomString(n int) string {
+	letterBytes := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letterBytes[rand.Intn(len(letterBytes))]
+	}
+	return string(b)
 }
