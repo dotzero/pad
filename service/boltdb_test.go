@@ -4,10 +4,25 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"os"
+	"strconv"
+	"sync"
 	"testing"
 
 	"github.com/boltdb/bolt"
 )
+
+func SuiteSetPad(t *testing.T, b *BoltBackend, key string) {
+	exp := randomString(10)
+	ok(t, b.SetPad(key, exp))
+
+	if err := b.db.View(func(tx *bolt.Tx) error {
+		v := tx.Bucket(b.bucketPads).Get([]byte(key))
+		equals(t, []byte(exp), v)
+		return nil
+	}); err != nil {
+		t.Fatalf("unexpected error: %s", err)
+	}
+}
 
 func TestNewBoltBackend(t *testing.T) {
 	path := tempfile()
@@ -22,16 +37,25 @@ func TestSetPad(t *testing.T) {
 	backend := newTestBackend()
 	defer backend.db.Close()
 
-	exp := randomString(10)
-	ok(t, backend.SetPad("foo", exp))
+	SuiteSetPad(t, backend, "foo")
+}
 
-	if err := backend.db.View(func(tx *bolt.Tx) error {
-		v := tx.Bucket(backend.bucketPads).Get([]byte("foo"))
-		equals(t, []byte(exp), v)
-		return nil
-	}); err != nil {
-		t.Fatalf("unexpected error: %s", err)
+func TestSetPad_Concurrent(t *testing.T) {
+	backend := newTestBackend()
+	defer backend.db.Close()
+
+	var wg sync.WaitGroup
+
+	n := rand.Intn(100)
+	for i := 0; i < n; i++ {
+		wg.Add(1)
+
+		go func(i int, b *BoltBackend) {
+			defer wg.Done()
+			SuiteSetPad(t, b, strconv.Itoa(i))
+		}(i, backend)
 	}
+	wg.Wait()
 }
 
 func TestGetPad_Exists(t *testing.T) {
