@@ -45,7 +45,7 @@ func main() {
 		os.Exit(0)
 	}
 	if *flagSilent == false {
-		// If -version was not passed
+		// If -silent was not passed
 		fmt.Println("Configuration")
 		fmt.Println("=> DB:", cfg.DB)
 		fmt.Println("=> Salt:", cfg.Salt)

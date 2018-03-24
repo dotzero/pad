@@ -9,4 +9,5 @@ install:
   - dep ensure -vendor-only
 
 script:
+  - make build
   - make test

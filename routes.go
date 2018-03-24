@@ -34,7 +34,14 @@ func (a *App) getPad(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tpl := template.New("main")
-	tpl, _ = tpl.ParseFiles("templates/main.html")
+	tpl, err = tpl.ParseFiles("templates/main.html")
+	if err != nil {
+		respondWithJSON(w, http.StatusBadRequest, map[string]string{
+			"message": "Template templates/main.html was not found",
+		})
+		return
+	}
+
 	tpl.Execute(w, Pad{
 		Name:    padname,
 		Content: content,
@@ -50,6 +57,7 @@ func (a *App) setPad(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
+
 	padname := chi.URLParam(r, "padname")
 	content := r.Form.Get("t")
 
