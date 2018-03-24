@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/kelseyhightower/envconfig"
@@ -46,17 +47,17 @@ func main() {
 	}
 	if *flagSilent == false {
 		// If -silent was not passed
-		fmt.Println("Configuration")
-		fmt.Println("=> DB:", cfg.DB)
-		fmt.Println("=> Salt:", cfg.Salt)
-		fmt.Println("=> Host:", cfg.Host)
-		fmt.Println("=> Port:", cfg.Port)
+		log.Printf("Env DB: %s", cfg.DB)
+		log.Printf("Env Salt: %s", cfg.Salt)
+		log.Printf("Env Host: %s", cfg.Host)
+		log.Printf("Env Port: %s", cfg.Port)
 	}
 
 	app, err := NewPadApp(&cfg)
 	if err != nil {
-		panic(err)
+		log.Fatalf("Error: %s", err)
 	}
+
 	app.Initialize(&cfg)
 	app.Run(*flagSilent)
 }
