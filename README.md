@@ -25,6 +25,7 @@ cd pad
 	-p  "8080:8080" \
 	-e PAD_SALT=random_salt_here \
 	-e PAD_PORT=8080 \
+    -v $PWD/pad.db:/app/pad.db \
 	dotzero/pad
 ```
 
@@ -42,8 +43,10 @@ services:
     ports:
       - "8080:8080"
     environment:
-        PAD_SALT: random_salt_here
-        PAD_PORT: 8080
+      PAD_SALT: random_salt_here
+      PAD_PORT: 8080
+    volumes:
+      - ./pad.db:/app/pad.db
 ```
 
 Run `docker-compose up -d`.
