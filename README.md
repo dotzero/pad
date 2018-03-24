@@ -22,11 +22,11 @@ cd pad
 > docker build -t dotzero/pad .
 
 > docker run -d --name pad_app \
-	-p  "8080:8080" \
-	-e PAD_SALT=random_salt_here \
-	-e PAD_PORT=8080 \
+    -p  "8080:8080" \
+    -e PAD_SALT=random_salt_here \
+    -e PAD_PORT=8080 \
     -v $PWD/pad.db:/app/pad.db \
-	dotzero/pad
+    dotzero/pad
 ```
 
 ### Running container with `docker-compose`
