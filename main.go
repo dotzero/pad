@@ -23,10 +23,11 @@ var (
 
 // Configuration is a Pad configuration
 type Configuration struct {
-	DB   string `default:"pad.db"`
-	Salt string `default:""`
-	Host string `default:"0.0.0.0"`
-	Port string `default:"8080"`
+	DB      string `default:"pad.db"`
+	Salt    string `default:""`
+	Host    string `default:"0.0.0.0"`
+	Port    string `default:"8080"`
+	WebRoot string `default:"."`
 }
 
 // App is a Pad app

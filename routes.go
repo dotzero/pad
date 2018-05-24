@@ -1,10 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"html/template"
 	"net/http"
-	"os"
 	"path/filepath"
 	"strings"
 
@@ -19,20 +17,20 @@ type Pad struct {
 	Content string
 }
 
+type response struct {
+	Message string `json:"message"`
+	Padname string `json:"padname,omitempty"`
+}
+
 func (a *App) routes() chi.Router {
-	workDir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-
-	static := filepath.Join(workDir, "static")
-
 	router := chi.NewRouter()
+
 	router.Use(middleware.Logger)
 	router.Use(middleware.NoCache)
 	router.Use(middleware.RealIP)
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.RedirectSlashes)
+
 	router.Get("/", a.handleNewPad())
 	router.Get("/{padname}", a.handleGetPad())
 	router.Post("/{padname}", a.handleSetPad())
@@ -40,6 +38,8 @@ func (a *App) routes() chi.Router {
 	router.Get("/robots.txt", func(w http.ResponseWriter, r *http.Request) {
 		render.PlainText(w, r, "User-agent: *\n")
 	})
+
+	static := filepath.Join(a.Config.WebRoot, "static")
 
 	router.Get("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, filepath.Join(static, "/favicon.ico"))
@@ -75,9 +75,8 @@ func (a *App) handleGetPad() http.HandlerFunc {
 		tpl := template.New("main")
 		tpl, err = tpl.ParseFiles("templates/main.html")
 		if err != nil {
-			respondWithJSON(w, http.StatusBadRequest, map[string]string{
-				"message": "Template templates/main.html was not found",
-			})
+			render.Status(r, http.StatusBadRequest)
+			render.JSON(w, r, &response{"Template templates/main.html was not found", padname})
 			return
 		}
 
@@ -93,9 +92,8 @@ func (a *App) handleSetPad() http.HandlerFunc {
 		var err error
 		err = r.ParseForm()
 		if err != nil {
-			respondWithJSON(w, http.StatusBadRequest, map[string]string{
-				"message": "error",
-			})
+			render.Status(r, http.StatusBadRequest)
+			render.JSON(w, r, &response{Message: "error"})
 			return
 		}
 
@@ -104,26 +102,14 @@ func (a *App) handleSetPad() http.HandlerFunc {
 
 		err = a.BoltBackend.SetPad(padname, content)
 		if err != nil {
-			respondWithJSON(w, http.StatusBadRequest, map[string]string{
-				"message": "error",
-				"padname": padname,
-			})
+			render.Status(r, http.StatusBadRequest)
+			render.JSON(w, r, &response{"error", padname})
 			return
 		}
 
-		respondWithJSON(w, http.StatusOK, map[string]string{
-			"message": "ok",
-			"padname": padname,
-		})
+		render.Status(r, http.StatusOK)
+		render.JSON(w, r, &response{"ok", padname})
 	}
-}
-
-func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
-	response, _ := json.Marshal(payload)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	w.Write(response)
 }
 
 // serves static files from /web
