@@ -37,9 +37,11 @@ type App struct {
 	HashID      *service.HashID
 }
 
-var flagSet = flag.NewFlagSet("", flag.ExitOnError)
-var flagSilent = flagSet.Bool("silent", false, "Operate without emitting any output")
-var flagVersion = flagSet.Bool("version", false, "Show the version number and information")
+var (
+	flagSet     = flag.NewFlagSet("", flag.ExitOnError)
+	flagSilent  = flagSet.Bool("silent", false, "Operate without emitting any output")
+	flagVersion = flagSet.Bool("version", false, "Show the version number and information")
+)
 
 func main() {
 	var cfg Config
@@ -47,12 +49,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	flagSet.Parse(os.Args[1:])
-	if *flagVersion {
+	if err := flagSet.Parse(os.Args[1:]); err != nil {
+		os.Exit(1)
+	}
+	if *flagVersion == true {
 		// If -version was passed
-		fmt.Println("Version:", Version)
-		fmt.Println("Commit hash:", CommitHash)
-		fmt.Println("Compile date", CompileDate)
+		fmt.Printf("Version: %s\nCommit hash: %s\nCompile date: %s\n", Version, CommitHash, CompileDate)
 		os.Exit(0)
 	}
 	if *flagSilent == false {
