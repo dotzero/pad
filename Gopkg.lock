@@ -17,6 +17,12 @@
   version = "v3.3.2"
 
 [[projects]]
+  name = "github.com/go-chi/render"
+  packages = ["."]
+  revision = "9f855fadd4b8cde7773f9ef51f6b2705af239519"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/kelseyhightower/envconfig"
   packages = ["."]
   revision = "f611eb38b3875cc3bd991ca91c51d06446afa14c"
@@ -37,6 +43,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4a7687ce2021656764cb89ee0abb7097f7cc0f2c4cef2b3709f60a86019f10d8"
+  inputs-digest = "bb81a0e0a0abdd4c46e30bd658d82edc02d596545fce7f5643bab824828057fb"
   solver-name = "gps-cdcl"
   solver-version = 1

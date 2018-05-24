@@ -4,8 +4,13 @@ import (
 	"encoding/json"
 	"html/template"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/render"
 )
 
 // Pad is a pad data for template
@@ -14,10 +19,35 @@ type Pad struct {
 	Content string
 }
 
-func (a *App) initializeRoutes() {
-	a.Router.Get("/", a.handleNewPad())
-	a.Router.Get("/{padname}", a.handleGetPad())
-	a.Router.Post("/{padname}", a.handleSetPad())
+func (a *App) routes() chi.Router {
+	workDir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
+	static := filepath.Join(workDir, "static")
+
+	router := chi.NewRouter()
+	router.Use(middleware.Logger)
+	router.Use(middleware.NoCache)
+	router.Use(middleware.RealIP)
+	router.Use(middleware.Recoverer)
+	router.Use(middleware.RedirectSlashes)
+	router.Get("/", a.handleNewPad())
+	router.Get("/{padname}", a.handleGetPad())
+	router.Post("/{padname}", a.handleSetPad())
+
+	router.Get("/robots.txt", func(w http.ResponseWriter, r *http.Request) {
+		render.PlainText(w, r, "User-agent: *\n")
+	})
+
+	router.Get("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, filepath.Join(static, "/favicon.ico"))
+	})
+
+	// file server for static content from /static
+	addFileServer(router, "/static", http.Dir(static))
+	return router
 }
 
 func (a *App) handleNewPad() http.HandlerFunc {
@@ -94,4 +124,24 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	w.Write(response)
+}
+
+// serves static files from /web
+func addFileServer(r chi.Router, path string, root http.FileSystem) {
+	origPath := path
+	fs := http.StripPrefix(path, http.FileServer(root))
+	if path != "/" && path[len(path)-1] != '/' {
+		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
+		path += "/"
+	}
+	path += "*"
+
+	r.Get(path, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// don't show dirs, just serve files
+		if strings.HasSuffix(r.URL.Path, "/") && len(r.URL.Path) > 1 && r.URL.Path != (origPath+"/") {
+			http.NotFound(w, r)
+			return
+		}
+		fs.ServeHTTP(w, r)
+	}))
 }
