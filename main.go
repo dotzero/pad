@@ -21,8 +21,8 @@ var (
 	CompileDate = "Unknown"
 )
 
-// Configuration is a Pad configuration
-type Configuration struct {
+// Config is a Pad configuration
+type Config struct {
 	DB      string `default:"pad.db"`
 	Salt    string `default:""`
 	Host    string `default:"0.0.0.0"`
@@ -32,7 +32,7 @@ type Configuration struct {
 
 // App is a Pad app
 type App struct {
-	Config      *Configuration
+	Config
 	BoltBackend *service.BoltBackend
 	HashID      *service.HashID
 }
@@ -42,7 +42,7 @@ var flagSilent = flagSet.Bool("silent", false, "Operate without emitting any out
 var flagVersion = flagSet.Bool("version", false, "Show the version number and information")
 
 func main() {
-	var cfg Configuration
+	var cfg Config
 	if err := envconfig.Process("pad", &cfg); err != nil {
 		os.Exit(1)
 	}
@@ -63,7 +63,7 @@ func main() {
 		log.Printf("Env Port: %s", cfg.Port)
 	}
 
-	app, err := New(&cfg)
+	app, err := New(cfg)
 	if err != nil {
 		log.Fatalf("[ERROR] failed to setup application, %+v", err)
 	}
@@ -71,7 +71,7 @@ func main() {
 }
 
 // New prepares application and return it
-func New(cfg *Configuration) (*App, error) {
+func New(cfg Config) (*App, error) {
 	boltBackend, err := service.NewBoltBackend(cfg.DB)
 	if err != nil {
 		return nil, err
