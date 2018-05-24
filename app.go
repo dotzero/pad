@@ -59,14 +59,6 @@ func (a *App) initializeMiddlewares() {
 	a.Router.Use(middleware.RedirectSlashes)
 }
 
-func (a *App) initializeRoutes() {
-	a.Router.Get("/", a.newPad)
-	a.Router.Route("/{padname}", func(r chi.Router) {
-		r.Get("/", a.getPad)
-		r.Post("/", a.setPad)
-	})
-}
-
 func (a *App) initializeStatic() {
 	workDir, err := os.Getwd()
 	if err != nil {
