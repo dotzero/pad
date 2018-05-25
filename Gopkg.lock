@@ -23,10 +23,16 @@
   version = "v1.0.0"
 
 [[projects]]
-  name = "github.com/kelseyhightower/envconfig"
+  branch = "master"
+  name = "github.com/hashicorp/logutils"
   packages = ["."]
-  revision = "f611eb38b3875cc3bd991ca91c51d06446afa14c"
-  version = "v1.3.0"
+  revision = "0dc08b1671f34c4250ce212759ebd880f743d883"
+
+[[projects]]
+  name = "github.com/jessevdk/go-flags"
+  packages = ["."]
+  revision = "c6ca198ec95c841fdb89fc0de7496fed11ab854e"
+  version = "v1.4.0"
 
 [[projects]]
   name = "github.com/speps/go-hashids"
@@ -43,6 +49,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "bb81a0e0a0abdd4c46e30bd658d82edc02d596545fce7f5643bab824828057fb"
+  inputs-digest = "e59ccbe5aff440246e89ac0eb7261a41e49ec0ed28dbce7cb0f24eaa182ede69"
   solver-name = "gps-cdcl"
   solver-version = 1

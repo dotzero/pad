@@ -8,7 +8,8 @@ import (
 	"os"
 
 	"github.com/dotzero/pad/service"
-	"github.com/kelseyhightower/envconfig"
+	"github.com/hashicorp/logutils"
+	flags "github.com/jessevdk/go-flags"
 )
 
 var (
@@ -21,18 +22,22 @@ var (
 	CompileDate = "Unknown"
 )
 
-// Config is a Pad configuration
-type Config struct {
-	DB      string `default:"pad.db"`
-	Salt    string `default:""`
-	Host    string `default:"0.0.0.0"`
-	Port    string `default:"8080"`
-	WebRoot string `default:"."`
+// Opts with command line flags and env
+type Opts struct {
+	BoltPath  string `long:"db" env:"PAD_DB_PATH" default:"./db" description:"path to database"`
+	SecretKey string `long:"secret" env:"PAD_SECRET" description:"secret key"`
+
+	Host    string `long:"host" env:"PAD_HOST" default:"0.0.0.0" description:"host"`
+	Port    int    `long:"port" env:"PAD_PORT" default:"8080" description:"port"`
+	WebPath string `long:"path" env:"PAD_PATH" default:"." description:"path to web assets"`
+
+	Verbose bool `short:"v" long:"verbose" description:"enable verbose logging"`
+	Version bool `long:"version" description:"show the version number and information"`
 }
 
 // App is a Pad app
 type App struct {
-	Config
+	Opts
 	BoltBackend *service.BoltBackend
 	HashID      *service.HashID
 }
@@ -44,54 +49,62 @@ var (
 )
 
 func main() {
-	var cfg Config
-	if err := envconfig.Process("pad", &cfg); err != nil {
+	var opts Opts
+	p := flags.NewParser(&opts, flags.Default)
+	if _, err := p.ParseArgs(os.Args[1:]); err != nil {
 		os.Exit(1)
 	}
 
-	if err := flagSet.Parse(os.Args[1:]); err != nil {
-		os.Exit(1)
-	}
-	if *flagVersion == true {
+	setupLog(opts.Verbose)
+	log.Printf("[DEBUG] opts: %+v", opts)
+
+	if opts.Version {
 		// If -version was passed
 		fmt.Printf("Version: %s\nCommit hash: %s\nCompile date: %s\n", Version, CommitHash, CompileDate)
 		os.Exit(0)
 	}
-	if *flagSilent == false {
-		// If -silent was not passed
-		log.Printf("Env DB: %s", cfg.DB)
-		log.Printf("Env Salt: %s", cfg.Salt)
-		log.Printf("Env Host: %s", cfg.Host)
-		log.Printf("Env Port: %s", cfg.Port)
-	}
 
-	app, err := New(cfg)
+	app, err := New(opts)
 	if err != nil {
 		log.Fatalf("[ERROR] failed to setup application, %+v", err)
 	}
-	app.Run(*flagSilent)
+	app.Run()
 }
 
 // New prepares application and return it
-func New(cfg Config) (*App, error) {
-	boltBackend, err := service.NewBoltBackend(cfg.DB)
+func New(opts Opts) (*App, error) {
+	boltBackend, err := service.NewBoltBackend(opts.BoltPath)
 	if err != nil {
 		return nil, err
 	}
 
 	return &App{
-		Config:      cfg,
+		Opts:        opts,
 		BoltBackend: boltBackend,
-		HashID:      service.NewHashID(cfg.Salt, 3),
+		HashID:      service.NewHashID(opts.SecretKey, 3),
 	}, nil
 }
 
 // Run the listener
-func (a *App) Run(flagSilent bool) {
-	addr := a.Config.Host + ":" + a.Config.Port
-	if flagSilent == false {
-		fmt.Println("Listen at: http://" + addr)
-	}
+func (a *App) Run() {
+	addr := fmt.Sprintf("%s:%d", a.Opts.Host, a.Opts.Port)
+	log.Printf("[INFO] http server listen at: http://" + addr)
+
 	router := a.routes()
-	log.Fatal(http.ListenAndServe(addr, router))
+	log.Fatalf("[WARN] http server terminated, %s", http.ListenAndServe(addr, router))
+}
+
+func setupLog(verbose bool) {
+	filter := &logutils.LevelFilter{
+		Levels:   []logutils.LogLevel{"DEBUG", "INFO", "WARN", "ERROR"},
+		MinLevel: logutils.LogLevel("INFO"),
+		Writer:   os.Stdout,
+	}
+
+	if verbose {
+		log.SetFlags(log.LstdFlags | log.Lshortfile)
+		filter.MinLevel = logutils.LogLevel("DEBUG")
+	}
+
+	log.SetOutput(filter)
 }

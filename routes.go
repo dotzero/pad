@@ -39,7 +39,7 @@ func (a *App) routes() chi.Router {
 		render.PlainText(w, r, "User-agent: *\n")
 	})
 
-	static := filepath.Join(a.Config.WebRoot, "static")
+	static := filepath.Join(a.Opts.WebPath, "static")
 
 	router.Get("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, filepath.Join(static, "/favicon.ico"))
