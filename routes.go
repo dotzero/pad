@@ -2,20 +2,16 @@ package main
 
 import (
 	"html/template"
+	"log"
 	"net/http"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
 )
-
-// Pad is a pad data for template
-type Pad struct {
-	Name    string
-	Content string
-}
 
 type response struct {
 	Message string `json:"message"`
@@ -64,24 +60,39 @@ func (a *App) handleNewPad() http.HandlerFunc {
 }
 
 func (a *App) handleGetPad() http.HandlerFunc {
+	var (
+		init sync.Once
+		tpl  *template.Template
+		err  error
+	)
+
+	type data struct {
+		Padname string
+		Content string
+	}
+
 	return func(w http.ResponseWriter, r *http.Request) {
+		init.Do(func() {
+			tplPath := filepath.Join(a.Opts.WebPath, "templates/main.html")
+			tpl, err = template.New("main").ParseFiles(tplPath)
+			log.Printf("[DEBUG] parsed template: %s", tplPath)
+		})
+		if err != nil {
+			render.Status(r, http.StatusInternalServerError)
+			render.PlainText(w, r, err.Error())
+			return
+		}
+
 		padname := chi.URLParam(r, "padname")
 		content, err := a.BoltBackend.GetPad(padname)
 		if err != nil {
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			render.Status(r, http.StatusInternalServerError)
+			render.PlainText(w, r, err.Error())
 			return
 		}
 
-		tpl := template.New("main")
-		tpl, err = tpl.ParseFiles("templates/main.html")
-		if err != nil {
-			render.Status(r, http.StatusBadRequest)
-			render.JSON(w, r, &response{"Template templates/main.html was not found", padname})
-			return
-		}
-
-		tpl.Execute(w, Pad{
-			Name:    padname,
+		tpl.Execute(w, data{
+			Padname: padname,
 			Content: content,
 		})
 	}
