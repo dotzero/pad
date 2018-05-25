@@ -15,6 +15,7 @@ import (
 
 func (a *App) routes() chi.Router {
 	router := chi.NewRouter()
+	static := filepath.Join(a.Opts.WebPath, "static")
 
 	router.Use(middleware.Logger)
 	router.Use(middleware.NoCache)
@@ -30,14 +31,13 @@ func (a *App) routes() chi.Router {
 		render.PlainText(w, r, "User-agent: *\n")
 	})
 
-	static := filepath.Join(a.Opts.WebPath, "static")
-
 	router.Get("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, filepath.Join(static, "/favicon.ico"))
 	})
 
 	// file server for static content from /static
 	addFileServer(router, "/static", http.Dir(static))
+
 	return router
 }
 
