@@ -13,11 +13,6 @@ import (
 	"github.com/go-chi/render"
 )
 
-type response struct {
-	Message string `json:"message"`
-	Padname string `json:"padname,omitempty"`
-}
-
 func (a *App) routes() chi.Router {
 	router := chi.NewRouter()
 
@@ -50,7 +45,8 @@ func (a *App) handleNewPad() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cnt, err := a.BoltBackend.GetNextCounter()
 		if err != nil {
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			render.Status(r, http.StatusInternalServerError)
+			render.PlainText(w, r, err.Error())
 			return
 		}
 
@@ -99,6 +95,11 @@ func (a *App) handleGetPad() http.HandlerFunc {
 }
 
 func (a *App) handleSetPad() http.HandlerFunc {
+	type response struct {
+		Message string `json:"message"`
+		Padname string `json:"padname,omitempty"`
+	}
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		var err error
 		err = r.ParseForm()
