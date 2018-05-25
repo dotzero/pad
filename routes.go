@@ -51,7 +51,7 @@ func (a *App) handleNewPad() http.HandlerFunc {
 		}
 
 		hash := a.HashID.Encode(int64(cnt))
-		http.Redirect(w, r, "/"+hash, 301)
+		http.Redirect(w, r, "/"+hash, http.StatusFound)
 	}
 }
 
