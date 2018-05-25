@@ -68,7 +68,7 @@ func main() {
 
 // New prepares application and return it
 func New(opts Opts) (*App, error) {
-	boltBackend, err := service.NewBoltBackend(opts.BoltPath)
+	boltBackend, err := service.NewBoltBackend(opts.BoltPath, "pad.db")
 	if err != nil {
 		return nil, err
 	}

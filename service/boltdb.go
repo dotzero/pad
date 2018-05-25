@@ -15,8 +15,8 @@ type BoltBackend struct {
 }
 
 // NewBoltBackend returns a client to the Bolt DB
-func NewBoltBackend(boltPath string) (*BoltBackend, error) {
-	db, err := bolt.Open(filepath.Join(boltPath, "/pad.db"), 0666, nil)
+func NewBoltBackend(boltPath ...string) (*BoltBackend, error) {
+	db, err := bolt.Open(filepath.Join(boltPath...), 0666, nil)
 	if err != nil {
 		return nil, err
 	}
