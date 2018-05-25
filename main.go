@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -42,12 +41,6 @@ type App struct {
 	HashID      *service.HashID
 }
 
-var (
-	flagSet     = flag.NewFlagSet("", flag.ExitOnError)
-	flagSilent  = flagSet.Bool("silent", false, "Operate without emitting any output")
-	flagVersion = flagSet.Bool("version", false, "Show the version number and information")
-)
-
 func main() {
 	var opts Opts
 	p := flags.NewParser(&opts, flags.Default)
@@ -68,7 +61,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("[ERROR] failed to setup application, %+v", err)
 	}
-	app.Run()
+
+	err = app.Run()
+	log.Fatalf("[WARN] http server terminated, %s", err)
 }
 
 // New prepares application and return it
@@ -86,12 +81,12 @@ func New(opts Opts) (*App, error) {
 }
 
 // Run the listener
-func (a *App) Run() {
+func (a *App) Run() error {
 	addr := fmt.Sprintf("%s:%d", a.Opts.Host, a.Opts.Port)
 	log.Printf("[INFO] http server listen at: http://" + addr)
 
 	router := a.routes()
-	log.Fatalf("[WARN] http server terminated, %s", http.ListenAndServe(addr, router))
+	return http.ListenAndServe(addr, router)
 }
 
 func setupLog(verbose bool) {
