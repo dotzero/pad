@@ -4,6 +4,11 @@ import (
 	hashids "github.com/speps/go-hashids"
 )
 
+// Unique is a commin interface for unique ids generator
+type Unique interface {
+	Encode(num int64) string
+}
+
 // HashID is a client to the HashID
 type HashID struct {
 	Client *hashids.HashID

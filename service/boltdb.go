@@ -7,6 +7,13 @@ import (
 	"github.com/boltdb/bolt"
 )
 
+// Storage is a common storage interface
+type Storage interface {
+	SetPad(name string, value string) error
+	GetPad(name string) (value string, err error)
+	GetNextCounter() (next uint64, err error)
+}
+
 // BoltBackend is a client to the Bolt DB
 type BoltBackend struct {
 	db             *bolt.DB

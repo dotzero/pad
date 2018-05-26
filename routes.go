@@ -43,14 +43,14 @@ func (a *App) routes() chi.Router {
 
 func (a *App) handleNewPad() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		cnt, err := a.BoltBackend.GetNextCounter()
+		cnt, err := a.Storage.GetNextCounter()
 		if err != nil {
 			render.Status(r, http.StatusInternalServerError)
 			render.PlainText(w, r, err.Error())
 			return
 		}
 
-		hash := a.HashID.Encode(int64(cnt))
+		hash := a.Unique.Encode(int64(cnt))
 		http.Redirect(w, r, "/"+hash, http.StatusFound)
 	}
 }
@@ -80,7 +80,7 @@ func (a *App) handleGetPad() http.HandlerFunc {
 		}
 
 		padname := chi.URLParam(r, "padname")
-		content, err := a.BoltBackend.GetPad(padname)
+		content, err := a.Storage.GetPad(padname)
 		if err != nil {
 			render.Status(r, http.StatusInternalServerError)
 			render.PlainText(w, r, err.Error())
@@ -112,7 +112,7 @@ func (a *App) handleSetPad() http.HandlerFunc {
 		padname := chi.URLParam(r, "padname")
 		content := r.Form.Get("t")
 
-		err = a.BoltBackend.SetPad(padname, content)
+		err = a.Storage.SetPad(padname, content)
 		if err != nil {
 			render.Status(r, http.StatusBadRequest)
 			render.JSON(w, r, &response{"error", padname})

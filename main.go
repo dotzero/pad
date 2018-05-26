@@ -37,8 +37,8 @@ type Opts struct {
 // App is a Pad app
 type App struct {
 	Opts
-	BoltBackend *service.BoltBackend
-	HashID      *service.HashID
+	Storage service.Storage
+	Unique  service.Unique
 }
 
 func main() {
@@ -74,9 +74,9 @@ func New(opts Opts) (*App, error) {
 	}
 
 	return &App{
-		Opts:        opts,
-		BoltBackend: boltBackend,
-		HashID:      service.NewHashID(opts.SecretKey, 3),
+		Opts:    opts,
+		Storage: boltBackend,
+		Unique:  service.NewHashID(opts.SecretKey, 3),
 	}, nil
 }
 
