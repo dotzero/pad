@@ -25,3 +25,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/hashicorp/logutils"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/matryer/is"

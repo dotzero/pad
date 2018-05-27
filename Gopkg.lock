@@ -35,6 +35,12 @@
   version = "v1.4.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/matryer/is"
+  packages = ["."]
+  revision = "be846f6cea707577c0d3a1e055d6cb719b68d533"
+
+[[projects]]
   name = "github.com/speps/go-hashids"
   packages = ["."]
   revision = "d1d57a886aa7e3ef6092b70ceab077e35ee8e0ce"
@@ -49,6 +55,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e59ccbe5aff440246e89ac0eb7261a41e49ec0ed28dbce7cb0f24eaa182ede69"
+  inputs-digest = "d6c27803ea16b800dc8de105783ac22657cf1d3e10f2d6d134e6ee1af23603cf"
   solver-name = "gps-cdcl"
   solver-version = 1
