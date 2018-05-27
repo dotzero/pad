@@ -7,7 +7,7 @@
 Pad is a standalone version of cloud notepad. Allows to share any text data by unique links.
 Written in Go and Bolt as embedded key/value database.
 
-![](https://raw.githubusercontent.com/dotzero/pad/master/static/images/screenshot.png)
+![](https://raw.githubusercontent.com/dotzero/pad/master/web/images/screenshot.png)
 
 ## Installation
 
@@ -62,7 +62,7 @@ Path to BoltDB database. It represents a consistent snapshot of your data.
 
 ### PAD_SECRET
 
-* *default:* ``
+* *default:* `empty`
 
 Salt that using to generate hashids. Strongly recommend to replace with your own value.
 
@@ -78,7 +78,7 @@ This port **must** match the port that is exposed via Docker.
 
 ### PAD_PATH
 
-* *default:* `.`
+* *default:* `./web`
 
 Path to web assets, templates and static directories.
 

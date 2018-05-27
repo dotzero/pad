@@ -7,6 +7,7 @@ RUN apk add --update --no-cache make git libc-dev
 RUN go get -u github.com/golang/dep/cmd/dep
 
 WORKDIR /go/src/github.com/dotzero/pad
+
 COPY . .
 
 # build
@@ -20,8 +21,7 @@ WORKDIR /app
 
 # copy artefacts
 COPY --from=build-env /go/bin/pad /app
-COPY --from=build-env /go/src/github.com/dotzero/pad/static/ /app/static/
-COPY --from=build-env /go/src/github.com/dotzero/pad/templates/ /app/templates/
+COPY --from=build-env /go/src/github.com/dotzero/pad/web/ /app/web/
 
 ENV PAD_DB_PATH "./db"
 ENV PAD_SECRET "true_random_salt"
