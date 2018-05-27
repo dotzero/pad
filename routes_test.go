@@ -60,6 +60,9 @@ func NewTestRouter() chi.Router {
 	app := App{
 		Storage: mocks.NewStorage(),
 		Unique:  service.NewHashID("", 3),
+		Opts: Opts{
+			WebPath: "./web",
+		},
 	}
 
 	return app.routes()
