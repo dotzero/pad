@@ -7,11 +7,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dotzero/pad/service"
 	"github.com/go-chi/chi"
+	"github.com/matryer/is"
 
 	"github.com/dotzero/pad/mocks"
-	"github.com/matryer/is"
+	"github.com/dotzero/pad/service"
 )
 
 func TestHandleNewPad(t *testing.T) {

@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"path/filepath"
 
-	"github.com/boltdb/bolt"
+	"github.com/coreos/bbolt"
 )
 
 // Storage is a common storage interface
