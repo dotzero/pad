@@ -28,7 +28,7 @@ type Opts struct {
 
 	Host    string `long:"host" env:"PAD_HOST" default:"0.0.0.0" description:"host"`
 	Port    int    `long:"port" env:"PAD_PORT" default:"8080" description:"port"`
-	WebPath string `long:"path" env:"PAD_PATH" default:"." description:"path to web assets"`
+	WebPath string `long:"path" env:"PAD_PATH" default:"./web" description:"path to web assets"`
 
 	Verbose bool `short:"v" long:"verbose" description:"enable verbose logging"`
 	Version bool `long:"version" description:"show the version number and information"`
