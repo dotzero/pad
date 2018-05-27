@@ -12,7 +12,7 @@ COPY . .
 # build
 RUN dep ensure -v \
     && make build \
-    && /go/bin/pad -version
+    && /go/bin/pad --version
 
 FROM alpine:3.7
 
@@ -23,10 +23,10 @@ COPY --from=build-env /go/bin/pad /app
 COPY --from=build-env /go/src/github.com/dotzero/pad/static/ /app/static/
 COPY --from=build-env /go/src/github.com/dotzero/pad/templates/ /app/templates/
 
-ENV PAD_DB pad.db
-ENV PAD_SALT true_random_salt
-ENV PAD_HOST 0.0.0.0
-ENV PAD_PORT 8080
+ENV PAD_DB_PATH "./db"
+ENV PAD_SECRET "true_random_salt"
+ENV PAD_HOST "0.0.0.0"
+ENV PAD_PORT "8080"
 
 EXPOSE ${PAD_PORT}
 

@@ -21,9 +21,9 @@ cd pad
 ```bash
 > docker build -t dotzero/pad .
 
-> docker run -d --name pad_app \
+> docker run -d --rm --name pad_app \
     -p  "8080:8080" \
-    -e PAD_SALT=random_salt_here \
+    -e PAD_SECRET=random_salt_here \
     -e PAD_PORT=8080 \
     -v $PWD/db:/app/db \
     dotzero/pad
@@ -43,8 +43,8 @@ services:
     ports:
       - "8080:8080"
     environment:
-      PAD_DB: /app/db/pad.db
-      PAD_SALT: random_salt_here
+      PAD_DB_PATH: /app/db
+      PAD_SECRET: random_salt_here
       PAD_PORT: 8080
     volumes:
       - ./db:/app/db
@@ -54,23 +54,33 @@ Run `docker-compose up -d`.
 
 ## Environment variables
 
-### PAD_DB
+### PAD_DB_PATH
 
-* *default:* `pad.db`
+* *default:* `./db`
 
-Name of BoltDB database filename. It represents a consistent snapshot of your data.
+Path to BoltDB database. It represents a consistent snapshot of your data.
 
-### PAD_SALT
+### PAD_SECRET
 
-* *default:* `true_random_salt`
+* *default:* ``
 
 Salt that using to generate hashids. Strongly recommend to replace with your own value.
+
+### PAD_HOST
+
+* *default:* `0.0.0.0`
 
 ### PAD_PORT
 
 * *default:* `8080`
 
 This port **must** match the port that is exposed via Docker.
+
+### PAD_PATH
+
+* *default:* `.`
+
+Path to web assets, templates and static directories.
 
 ## License
 
