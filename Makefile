@@ -20,7 +20,7 @@ install:
 	go install -ldflags=$(LDFLAGS)
 
 test:
-	go test -v ./service
+	go test ./...
 
 clean:
 	if [ -f $(GOBIN)/$(BIN) ] ; then rm -f $(GOBIN)/$(BIN) ; fi
