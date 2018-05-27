@@ -68,6 +68,10 @@ func main() {
 
 // New prepares application and return it
 func New(opts Opts) (*App, error) {
+	if err := makeDirs(opts.BoltPath); err != nil {
+		return nil, err
+	}
+
 	boltBackend, err := service.NewBoltBackend(opts.BoltPath, "pad.db")
 	if err != nil {
 		return nil, err
@@ -102,4 +106,31 @@ func setupLog(verbose bool) {
 	}
 
 	log.SetOutput(filter)
+}
+
+func makeDirs(dirs ...string) error {
+	// exists returns whether the given file or directory exists or not
+	exists := func(path string) (bool, error) {
+		_, err := os.Stat(path)
+		if err == nil {
+			return true, nil
+		}
+		if os.IsNotExist(err) {
+			return false, nil
+		}
+		return true, err
+	}
+
+	for _, dir := range dirs {
+		ex, err := exists(dir)
+		if err != nil {
+			return fmt.Errorf("can't check directory status for %s", dir)
+		}
+		if !ex {
+			if e := os.MkdirAll(dir, 0700); e != nil {
+				return fmt.Errorf("can't make directory %s", dir)
+			}
+		}
+	}
+	return nil
 }
