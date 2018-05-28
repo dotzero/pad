@@ -10,23 +10,13 @@ Written in Go and Bolt as embedded key/value database.
 
 ![](https://raw.githubusercontent.com/dotzero/pad/master/web/images/screenshot.png)
 
-## Installation
+## Running container
 
 ```bash
-git clone https://github.com/dotzero/pad.git
-cd pad
-```
-
-### Running container
-
-```bash
-> docker build -t dotzero/pad .
-
 > docker run -d --rm --name pad_app \
-    -p  "8080:8080" \
+    -p "8080:8080" \
     -e PAD_SECRET=random_salt_here \
     -e PAD_PORT=8080 \
-    -v $PWD/db:/app/db \
     dotzero/pad
 ```
 
@@ -38,8 +28,8 @@ Create a `docker-compose.yml` file:
 version: "3"
 services:
   pad:
-    build: .
-    container_name: pad-app
+    image: dotzero/pad
+    container_name: pad_app
     restart: always
     ports:
       - "8080:8080"
@@ -51,7 +41,32 @@ services:
       - ./db:/app/db
 ```
 
-Run `docker-compose up -d`.
+Run `docker-compose up -d`, wait for it to initialize completely, and visit `http://localhost:8080`
+
+### Build container
+
+```bash
+> docker build -t dotzero/pad .
+```
+
+## Usage
+
+```
+Usage:
+  pad [OPTIONS]
+
+Application Options:
+      --db=      path to database (default: ./db) [$PAD_DB_PATH]
+      --secret=  secret key [$PAD_SECRET]
+      --host=    host (default: 0.0.0.0) [$PAD_HOST]
+      --port=    port (default: 8080) [$PAD_PORT]
+      --path=    path to web assets (default: ./web) [$PAD_PATH]
+  -v, --verbose  enable verbose logging
+      --version  show the version number and information
+
+Help Options:
+  -h, --help     Show this help message
+```
 
 ## Environment variables
 
