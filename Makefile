@@ -1,5 +1,4 @@
 GOBIN ?= $(shell go env GOPATH)/bin
-PKG = github.com/dotzero/pad
 BIN := pad
 
 VERSION := 1.0.0
@@ -13,7 +12,7 @@ LDFLAGS := "-s -w \
 
 all: build
 
-build: dep fmt vet
+build: fmt vet
 	go build -ldflags=$(LDFLAGS) -o $(GOBIN)/$(BIN)
 
 install:
@@ -25,13 +24,10 @@ test:
 clean:
 	if [ -f $(GOBIN)/$(BIN) ] ; then rm -f $(GOBIN)/$(BIN) ; fi
 
-dep:
-	dep ensure -vendor-only
-
 fmt:
 	find . -name '*.go' -not -path './.vendor/*' -exec gofmt -w=true {} ';'
 
 vet:
 	go vet ./...
 
-.PHONY: build install test clean dep fmt vet
+.PHONY: build install test clean fmt vet
