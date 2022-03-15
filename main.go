@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/dotzero/pad/hash"
-	"github.com/dotzero/pad/service"
+	"github.com/dotzero/pad/storage"
 	"github.com/hashicorp/logutils"
 	flags "github.com/jessevdk/go-flags"
 )
@@ -39,10 +39,16 @@ type hashEncoder interface {
 	Encode(num int64) string
 }
 
+type padStorage interface {
+	Get(name string) (value string, err error)
+	Set(name string, value string) error
+	NextCounter() (next uint64, err error)
+}
+
 // App is a Pad app
 type App struct {
 	Opts
-	Storage     service.Storage
+	Storage     padStorage
 	HashEncoder hashEncoder
 }
 
@@ -77,7 +83,7 @@ func New(opts Opts) (*App, error) {
 		return nil, err
 	}
 
-	boltBackend, err := service.NewBoltBackend(opts.BoltPath, "pad.db")
+	boltBackend, err := storage.New(opts.BoltPath, "pad.db")
 	if err != nil {
 		return nil, err
 	}

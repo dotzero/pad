@@ -1,4 +1,4 @@
-package service
+package storage
 
 import (
 	"encoding/binary"
@@ -7,22 +7,15 @@ import (
 	bolt "go.etcd.io/bbolt"
 )
 
-// Storage is a common storage interface
-type Storage interface {
-	SetPad(name string, value string) error
-	GetPad(name string) (value string, err error)
-	GetNextCounter() (next uint64, err error)
-}
-
-// BoltBackend is a client to the Bolt DB
-type BoltBackend struct {
+// BoltStorage is a wrapper over Bolt DB
+type BoltStorage struct {
 	db             *bolt.DB
 	bucketSettings []byte
 	bucketPads     []byte
 }
 
-// NewBoltBackend returns a client to the Bolt DB
-func NewBoltBackend(boltPath ...string) (*BoltBackend, error) {
+// New returns a wrapper over Bolt DB
+func New(boltPath ...string) (*BoltStorage, error) {
 	db, err := bolt.Open(filepath.Join(boltPath...), 0666, nil)
 	if err != nil {
 		return nil, err
@@ -31,8 +24,8 @@ func NewBoltBackend(boltPath ...string) (*BoltBackend, error) {
 	bucketSettings := []byte("settings")
 	bucketPads := []byte("pads")
 
-	// Ensure buckets exists
-	if err = db.Update(func(tx *bolt.Tx) error {
+	// ensure buckets exists
+	err = db.Update(func(tx *bolt.Tx) error {
 		if _, err := tx.CreateBucketIfNotExists(bucketSettings); err != nil {
 			return err
 		}
@@ -41,41 +34,45 @@ func NewBoltBackend(boltPath ...string) (*BoltBackend, error) {
 		}
 
 		return nil
-	}); err != nil {
+	})
+	if err != nil {
 		return nil, err
 	}
 
-	return &BoltBackend{
+	return &BoltStorage{
 		db:             db,
 		bucketSettings: bucketSettings,
 		bucketPads:     bucketPads,
 	}, nil
 }
 
-// SetPad update a content of the pad in BoltBackend
-func (c *BoltBackend) SetPad(name string, value string) error {
-	return c.db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket(c.bucketPads)
-		return b.Put([]byte(name), []byte(value))
-	})
-}
-
-// GetPad returns a content of pad from BoltBackend
-func (c *BoltBackend) GetPad(name string) (value string, err error) {
+// Get returns a content of the pad
+func (c *BoltStorage) Get(name string) (value string, err error) {
 	return value, c.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(c.bucketPads)
 		v := b.Get([]byte(name))
 		value = string(v[:])
+
 		return nil
 	})
 }
 
-// GetNextCounter returns next number of counter from BoltBackend
-func (c *BoltBackend) GetNextCounter() (next uint64, err error) {
+// Set update a content of the pad
+func (c *BoltStorage) Set(name string, value string) error {
+	return c.db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket(c.bucketPads)
+
+		return b.Put([]byte(name), []byte(value))
+	})
+}
+
+// NextCounter returns next number of the counter
+func (c *BoltStorage) NextCounter() (next uint64, err error) {
 	return next, c.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket(c.bucketSettings)
 		key := []byte("counter")
 		next = increment(b.Get(key))
+
 		return b.Put(key, itob(next))
 	})
 }

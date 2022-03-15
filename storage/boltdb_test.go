@@ -1,4 +1,4 @@
-package service
+package storage
 
 import (
 	"io/ioutil"
@@ -12,39 +12,39 @@ import (
 	bolt "go.etcd.io/bbolt"
 )
 
-func SuiteSetPad(t *testing.T, b *BoltBackend, key string) {
-	is := is.New(t)
-	exp := randomString(10)
-	err := b.SetPad(key, exp)
-	is.NoErr(err)
-
-	if err := b.db.View(func(tx *bolt.Tx) error {
-		v := tx.Bucket(b.bucketPads).Get([]byte(key))
-		is.Equal([]byte(exp), v)
-		return nil
-	}); err != nil {
-		t.Fatalf("unexpected error: %s", err)
-	}
-}
-
-func TestNewBoltBackend(t *testing.T) {
-	is := is.New(t)
+func TestNew(t *testing.T) {
 	path := tempfile()
-	backend, err := NewBoltBackend(path)
+	backend, err := New(path)
 
+	is := is.New(t)
 	is.NoErr(err)
 	is.Equal([]byte("settings"), backend.bucketSettings)
 	is.Equal([]byte("pads"), backend.bucketPads)
 }
 
-func TestSetPad(t *testing.T) {
+func suiteSetPad(t *testing.T, b *BoltStorage, key string) {
+	is := is.New(t)
+	exp := randomString(10)
+
+	err := b.Set(key, exp)
+	is.NoErr(err)
+
+	err = b.db.View(func(tx *bolt.Tx) error {
+		v := tx.Bucket(b.bucketPads).Get([]byte(key))
+		is.Equal([]byte(exp), v)
+		return nil
+	})
+	is.NoErr(err)
+}
+
+func TestSet(t *testing.T) {
 	backend := newTestBackend()
 	defer backend.db.Close()
 
-	SuiteSetPad(t, backend, "foo")
+	suiteSetPad(t, backend, "foo")
 }
 
-func TestSetPad_Concurrent(t *testing.T) {
+func TestSetConcurrent(t *testing.T) {
 	backend := newTestBackend()
 	defer backend.db.Close()
 
@@ -54,42 +54,45 @@ func TestSetPad_Concurrent(t *testing.T) {
 	for i := 0; i < n; i++ {
 		wg.Add(1)
 
-		go func(i int, b *BoltBackend) {
+		go func(i int, b *BoltStorage) {
 			defer wg.Done()
-			SuiteSetPad(t, b, strconv.Itoa(i))
+			suiteSetPad(t, b, strconv.Itoa(i))
 		}(i, backend)
 	}
 	wg.Wait()
 }
 
-func TestGetPad_Exists(t *testing.T) {
-	is := is.New(t)
+func TestGet(t *testing.T) {
 	backend := newTestBackend()
 	defer backend.db.Close()
 
+	is := is.New(t)
 	exp := randomString(10)
-	err := backend.SetPad("foo", exp)
+
+	err := backend.Set("foo", exp)
 	is.NoErr(err)
 
-	act, err := backend.GetPad("foo")
+	act, err := backend.Get("foo")
 	is.NoErr(err)
 	is.Equal(exp, act)
 }
 
-func TestGetPad_NotExists(t *testing.T) {
-	is := is.New(t)
+func TestGetNotExists(t *testing.T) {
 	backend := newTestBackend()
 	defer backend.db.Close()
 
-	act, err := backend.GetPad("foo")
+	is := is.New(t)
+
+	act, err := backend.Get("foo")
 	is.NoErr(err)
 	is.Equal("", act)
 }
 
-func TestGetNextCounter(t *testing.T) {
-	is := is.New(t)
+func TestNextCounter(t *testing.T) {
 	backend := newTestBackend()
 	defer backend.db.Close()
+
+	is := is.New(t)
 
 	var (
 		err error
@@ -97,7 +100,7 @@ func TestGetNextCounter(t *testing.T) {
 	)
 
 	for n := uint64(1); n <= uint64(10); n++ {
-		cnt, err = backend.GetNextCounter()
+		cnt, err = backend.NextCounter()
 		is.NoErr(err)
 		is.Equal(n, cnt)
 	}
@@ -111,8 +114,8 @@ func TestIncrement(t *testing.T) {
 	is.Equal(uint64(1000000000), increment(itob(999999999)))
 }
 
-func newTestBackend() *BoltBackend {
-	backend, err := NewBoltBackend(tempfile())
+func newTestBackend() *BoltStorage {
+	backend, err := New(tempfile())
 	if err != nil {
 		panic(err)
 	}
@@ -120,7 +123,6 @@ func newTestBackend() *BoltBackend {
 	return backend
 }
 
-// tempfile returns a temporary file path.
 func tempfile() string {
 	f, err := ioutil.TempFile("", "bolt-")
 	if err != nil {
@@ -132,6 +134,7 @@ func tempfile() string {
 	if err := os.Remove(f.Name()); err != nil {
 		panic(err)
 	}
+
 	return f.Name()
 }
 

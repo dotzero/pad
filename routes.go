@@ -42,7 +42,7 @@ func (a *App) routes() chi.Router {
 
 func (a *App) handleNewPad() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		cnt, err := a.Storage.GetNextCounter()
+		cnt, err := a.Storage.NextCounter()
 		if err != nil {
 			render.Status(r, http.StatusInternalServerError)
 			render.PlainText(w, r, err.Error())
@@ -79,7 +79,7 @@ func (a *App) handleGetPad() http.HandlerFunc {
 		}
 
 		padname := chi.URLParam(r, "padname")
-		content, err := a.Storage.GetPad(padname)
+		content, err := a.Storage.Get(padname)
 		if err != nil {
 			render.Status(r, http.StatusInternalServerError)
 			render.PlainText(w, r, err.Error())
@@ -111,7 +111,7 @@ func (a *App) handleSetPad() http.HandlerFunc {
 		padname := chi.URLParam(r, "padname")
 		content := r.Form.Get("t")
 
-		err = a.Storage.SetPad(padname, content)
+		err = a.Storage.Set(padname, content)
 		if err != nil {
 			render.Status(r, http.StatusBadRequest)
 			render.JSON(w, r, &response{"error", padname})

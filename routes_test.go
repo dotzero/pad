@@ -11,7 +11,7 @@ import (
 	"github.com/matryer/is"
 
 	"github.com/dotzero/pad/hash"
-	"github.com/dotzero/pad/mocks"
+	"github.com/dotzero/pad/storage"
 )
 
 func TestHandleNewPad(t *testing.T) {
@@ -58,7 +58,7 @@ func TestHandleSetPad(t *testing.T) {
 
 func NewTestRouter() chi.Router {
 	app := App{
-		Storage:     mocks.NewStorage(),
+		Storage:     storage.NewMock(),
 		HashEncoder: hash.New("", 3),
 		Opts: Opts{
 			WebPath: "./web",
