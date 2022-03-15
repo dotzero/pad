@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/dotzero/pad/hash"
 	"github.com/dotzero/pad/service"
 	"github.com/hashicorp/logutils"
 	flags "github.com/jessevdk/go-flags"
@@ -34,11 +35,15 @@ type Opts struct {
 	Version bool `long:"version" description:"show the version number and information"`
 }
 
+type hashEncoder interface {
+	Encode(num int64) string
+}
+
 // App is a Pad app
 type App struct {
 	Opts
-	Storage service.Storage
-	Unique  service.Unique
+	Storage     service.Storage
+	HashEncoder hashEncoder
 }
 
 func main() {
@@ -78,9 +83,9 @@ func New(opts Opts) (*App, error) {
 	}
 
 	return &App{
-		Opts:    opts,
-		Storage: boltBackend,
-		Unique:  service.NewHashID(opts.SecretKey, 3),
+		Opts:        opts,
+		Storage:     boltBackend,
+		HashEncoder: hash.New(opts.SecretKey, 3),
 	}, nil
 }
 

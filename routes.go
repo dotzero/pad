@@ -49,7 +49,7 @@ func (a *App) handleNewPad() http.HandlerFunc {
 			return
 		}
 
-		hash := a.Unique.Encode(int64(cnt))
+		hash := a.HashEncoder.Encode(int64(cnt))
 		http.Redirect(w, r, "/"+hash, http.StatusFound)
 	}
 }

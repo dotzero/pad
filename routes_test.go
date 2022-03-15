@@ -10,8 +10,8 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/matryer/is"
 
+	"github.com/dotzero/pad/hash"
 	"github.com/dotzero/pad/mocks"
-	"github.com/dotzero/pad/service"
 )
 
 func TestHandleNewPad(t *testing.T) {
@@ -58,8 +58,8 @@ func TestHandleSetPad(t *testing.T) {
 
 func NewTestRouter() chi.Router {
 	app := App{
-		Storage: mocks.NewStorage(),
-		Unique:  service.NewHashID("", 3),
+		Storage:     mocks.NewStorage(),
+		HashEncoder: hash.New("", 3),
 		Opts: Opts{
 			WebPath: "./web",
 		},

@@ -8,8 +8,8 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/coreos/bbolt"
 	"github.com/matryer/is"
+	bolt "go.etcd.io/bbolt"
 )
 
 func SuiteSetPad(t *testing.T, b *BoltBackend, key string) {

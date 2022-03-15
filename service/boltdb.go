@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"path/filepath"
 
-	"github.com/coreos/bbolt"
+	bolt "go.etcd.io/bbolt"
 )
 
 // Storage is a common storage interface
