@@ -86,10 +86,15 @@ func (a *App) handleGetPad() http.HandlerFunc {
 			return
 		}
 
-		tpl.Execute(w, data{
+		err = tpl.Execute(w, data{
 			Padname: padname,
 			Content: content,
 		})
+		if err != nil {
+			render.Status(r, http.StatusInternalServerError)
+			render.PlainText(w, r, err.Error())
+			return
+		}
 	}
 }
 
@@ -128,7 +133,7 @@ func addFileServer(r chi.Router, path string, root http.FileSystem) {
 	origPath := path
 	fs := http.StripPrefix(path, http.FileServer(root))
 	if path != "/" && path[len(path)-1] != '/' {
-		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
+		r.Get(path, http.RedirectHandler(path+"/", http.StatusMovedPermanently).ServeHTTP)
 		path += "/"
 	}
 	path += "*"
