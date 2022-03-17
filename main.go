@@ -3,11 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 
-	"github.com/dotzero/pad/hash"
-	"github.com/dotzero/pad/storage"
 	"github.com/hashicorp/logutils"
 	flags "github.com/jessevdk/go-flags"
 )
@@ -35,23 +32,6 @@ type Opts struct {
 	Version bool `long:"version" description:"show the version number and information"`
 }
 
-type hashEncoder interface {
-	Encode(num int64) string
-}
-
-type padStorage interface {
-	Get(name string) (value string, err error)
-	Set(name string, value string) error
-	NextCounter() (next uint64, err error)
-}
-
-// App is a Pad app
-type App struct {
-	Opts
-	Storage     padStorage
-	HashEncoder hashEncoder
-}
-
 func main() {
 	var opts Opts
 	p := flags.NewParser(&opts, flags.Default)
@@ -59,49 +39,22 @@ func main() {
 		os.Exit(1)
 	}
 
-	setupLog(opts.Verbose)
-	log.Printf("[DEBUG] opts: %+v", opts)
-
 	if opts.Version {
-		// If -version was passed
 		fmt.Printf("Version: %s\nCommit hash: %s\nCompile date: %s\n", Version, CommitHash, CompileDate)
 		os.Exit(0)
 	}
+
+	setupLog(opts.Verbose)
+	log.Printf("[DEBUG] opts: %+v", opts)
 
 	app, err := New(opts)
 	if err != nil {
 		log.Fatalf("[ERROR] failed to setup application, %+v", err)
 	}
 
-	err = app.Run()
-	log.Fatalf("[WARN] http server terminated, %s", err)
-}
-
-// New prepares application and return it
-func New(opts Opts) (*App, error) {
-	if err := makeDirs(opts.BoltPath); err != nil {
-		return nil, err
+	if err := app.Run(); err != nil {
+		log.Fatalf("[WARN] http server terminated, %s", err)
 	}
-
-	boltBackend, err := storage.New(opts.BoltPath, "pad.db")
-	if err != nil {
-		return nil, err
-	}
-
-	return &App{
-		Opts:        opts,
-		Storage:     boltBackend,
-		HashEncoder: hash.New(opts.SecretKey, 3),
-	}, nil
-}
-
-// Run the listener
-func (a *App) Run() error {
-	addr := fmt.Sprintf("%s:%d", a.Opts.Host, a.Opts.Port)
-	log.Printf("[INFO] http server listen at: http://" + addr)
-
-	router := a.routes()
-	return http.ListenAndServe(addr, router)
 }
 
 func setupLog(verbose bool) {
@@ -117,31 +70,4 @@ func setupLog(verbose bool) {
 	}
 
 	log.SetOutput(filter)
-}
-
-func makeDirs(dirs ...string) error {
-	// exists returns whether the given file or directory exists or not
-	exists := func(path string) (bool, error) {
-		_, err := os.Stat(path)
-		if err == nil {
-			return true, nil
-		}
-		if os.IsNotExist(err) {
-			return false, nil
-		}
-		return true, err
-	}
-
-	for _, dir := range dirs {
-		ex, err := exists(dir)
-		if err != nil {
-			return fmt.Errorf("can't check directory status for %s", dir)
-		}
-		if !ex {
-			if e := os.MkdirAll(dir, 0700); e != nil {
-				return fmt.Errorf("can't make directory %s", dir)
-			}
-		}
-	}
-	return nil
 }

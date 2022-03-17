@@ -76,8 +76,23 @@ func Get(s storage, tplPath string) http.HandlerFunc {
 		if err != nil {
 			render.Status(r, http.StatusInternalServerError)
 			render.PlainText(w, r, err.Error())
+		}
+	}
+}
+
+// Raw handle get specific pad in plain text
+func Raw(s storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		padname := chi.URLParam(r, "padname")
+		content, err := s.Get(padname)
+		if err != nil {
+			render.Status(r, http.StatusInternalServerError)
+			render.PlainText(w, r, err.Error())
 			return
 		}
+
+		render.Status(r, http.StatusOK)
+		render.PlainText(w, r, content)
 	}
 }
 
