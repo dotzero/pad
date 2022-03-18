@@ -1,7 +1,7 @@
 GOBIN ?= $(shell go env GOPATH)/bin
 BIN := pad
 
-VERSION := 1.0.0
+VERSION := $(shell git rev-parse --abbrev-ref HEAD)
 HASH := $(shell git rev-parse --short HEAD)
 DATE := $(shell date +%FT%T%z)
 
