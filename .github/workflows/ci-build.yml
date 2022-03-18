@@ -59,12 +59,12 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_REF: ${{ github.ref }}
         run: |
-          VERSION="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
-          echo "VERSION=${VERSION}, COMMIT_HASH=${GITHUB_SHA}"
+          ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
+          echo "VERSION=${ref}, COMMIT_HASH=${GITHUB_SHA}"
           echo ${GITHUB_PACKAGE_TOKEN} | docker login ghcr.io -u ${USERNAME} --password-stdin
           echo ${DOCKER_HUB_TOKEN} | docker login -u ${USERNAME} --password-stdin
           docker buildx build --push \
-              --build-arg CI=github --build-arg VERSION=${VERSION} --build-arg COMMIT_HASH=${COMMIT_HASH} \
+              --build-arg CI=github --build-arg VERSION=${ref} --build-arg COMMIT_HASH=${COMMIT_HASH} \
               --platform linux/amd64,linux/arm/v7,linux/arm64 \
               -t ghcr.io/dotzero/pad:${ref} -t ghcr.io/dotzero/pad:latest \
               -t dotzero/pad:${ref} -t dotzero/pad:latest .
