@@ -15,14 +15,14 @@ type hashEncoder interface {
 	Encode(num int64) string
 }
 
-type storage interface {
+type padStorage interface {
 	Get(name string) (value string, err error)
 	Set(name string, value string) error
 	NextCounter() (next uint64, err error)
 }
 
 // Redirect handle redirects to new pads
-func Redirect(s storage, h hashEncoder) http.HandlerFunc {
+func Redirect(s padStorage, h hashEncoder) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cnt, err := s.NextCounter()
 		if err != nil {
@@ -37,7 +37,7 @@ func Redirect(s storage, h hashEncoder) http.HandlerFunc {
 }
 
 // Get handle get specific pad
-func Get(s storage, tplPath string) http.HandlerFunc {
+func Get(s padStorage, tplPath string) http.HandlerFunc {
 	var (
 		init sync.Once
 		tpl  *template.Template
@@ -81,7 +81,7 @@ func Get(s storage, tplPath string) http.HandlerFunc {
 }
 
 // Raw handle get specific pad in plain text
-func Raw(s storage) http.HandlerFunc {
+func Raw(s padStorage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		padname := chi.URLParam(r, "padname")
 		content, err := s.Get(padname)
@@ -97,7 +97,7 @@ func Raw(s storage) http.HandlerFunc {
 }
 
 // Set handle set specific pad
-func Set(s storage) http.HandlerFunc {
+func Set(s padStorage) http.HandlerFunc {
 	type response struct {
 		Message string `json:"message"`
 		Padname string `json:"padname,omitempty"`

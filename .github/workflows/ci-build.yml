@@ -64,7 +64,7 @@ jobs:
           echo ${GITHUB_PACKAGE_TOKEN} | docker login ghcr.io -u ${USERNAME} --password-stdin
           echo ${DOCKER_HUB_TOKEN} | docker login -u ${USERNAME} --password-stdin
           docker buildx build --push \
-              --build-arg CI=github --build-arg VERSION=${ref} --build-arg COMMIT_HASH=${COMMIT_HASH} \
+              --build-arg CI=github --build-arg VERSION=${ref} --build-arg COMMIT_HASH=${GITHUB_SHA} \
               --platform linux/amd64,linux/arm/v7,linux/arm64 \
               -t ghcr.io/dotzero/pad:${ref} -t ghcr.io/dotzero/pad:latest \
               -t dotzero/pad:${ref} -t dotzero/pad:latest .
