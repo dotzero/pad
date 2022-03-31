@@ -75,7 +75,7 @@ func (a *App) routes() chi.Router {
 
 	router.Get("/", handlers.Redirect(a.Storage, a.HashEncoder))
 	router.Get("/raw/{padname}", handlers.Raw(a.Storage))
-	router.Get("/{padname}", handlers.Get(a.Storage, a.Templates))
+	router.Get("/{padname}", handlers.Get(a.Storage, a.Templates.Lookup("main.html")))
 	router.Post("/{padname}", handlers.Set(a.Storage))
 
 	router.Get("/robots.txt", func(w http.ResponseWriter, r *http.Request) {

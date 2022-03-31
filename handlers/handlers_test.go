@@ -7,20 +7,26 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+	"text/template"
 
 	"github.com/go-chi/chi"
 	"github.com/matryer/is"
-
-	"github.com/dotzero/pad/hash"
-	"github.com/dotzero/pad/storage"
 )
 
 func TestHandleRedirect(t *testing.T) {
 	is := is.New(t)
-	s := storage.NewMock()
-	h := hash.New("", 3)
+	s := &storageMock{
+		NextCounterFunc: func() (uint64, error) {
+			return 1, nil
+		},
+	}
+	e := &encoderMock{
+		EncodeFunc: func(num int64) string {
+			return "foo"
+		},
+	}
 
-	handler := Redirect(s, h)
+	handler := Redirect(s, e)
 
 	router := chi.NewRouter()
 	router.Get("/", handler)
@@ -30,30 +36,34 @@ func TestHandleRedirect(t *testing.T) {
 	is.Equal(w.Code, http.StatusFound)
 }
 
-// func TestHandleGet(t *testing.T) {
-// 	is := is.New(t)
+func TestHandleGet(t *testing.T) {
+	is := is.New(t)
+	s := &storageMock{
+		GetFunc: func(name string) (string, error) {
+			return "bar", nil
+		},
+	}
 
-// 	s := storage.NewMock()
-// 	err := s.Set("foo", "bar")
-// 	is.NoErr(err)
+	tpl := template.Must(template.New("").Parse("{{ .Padname }}{{ .Content }}"))
 
-// 	handler := Get(s, "../web/templates/main.html")
+	handler := Get(s, tpl)
 
-// 	router := chi.NewRouter()
-// 	router.Get("/{padname}", handler)
+	router := chi.NewRouter()
+	router.Get("/{padname}", handler)
 
-// 	w, err := testRequest(router, "GET", "/foo", "")
-// 	is.NoErr(err)
-// 	is.Equal(w.Code, http.StatusOK)
-// 	is.True(strings.Contains(w.Body.String(), "bar"))
-// }
+	w, err := testRequest(router, "GET", "/foo", "")
+	is.NoErr(err)
+	is.Equal(w.Code, http.StatusOK)
+	is.True(strings.Contains(w.Body.String(), "foobar"))
+}
 
 func TestHandleRaw(t *testing.T) {
 	is := is.New(t)
-
-	s := storage.NewMock()
-	err := s.Set("foo", "bar")
-	is.NoErr(err)
+	s := &storageMock{
+		GetFunc: func(name string) (string, error) {
+			return "bar", nil
+		},
+	}
 
 	handler := Raw(s)
 
@@ -68,8 +78,11 @@ func TestHandleRaw(t *testing.T) {
 
 func TestHandleSet(t *testing.T) {
 	is := is.New(t)
-
-	s := storage.NewMock()
+	s := &storageMock{
+		SetFunc: func(name string, value string) error {
+			return nil
+		},
+	}
 
 	handler := Set(s)
 
