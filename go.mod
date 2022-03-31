@@ -9,7 +9,7 @@ require (
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/matryer/is v1.4.0
 	github.com/speps/go-hashids v1.0.0
-	github.com/zero-pkg/tpl v0.0.0-20220331052707-853f93528e74
+	github.com/zero-pkg/tpl v1.0.0
 	go.etcd.io/bbolt v1.3.6
 )
 

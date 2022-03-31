@@ -17,7 +17,7 @@ github.com/matryer/is
 # github.com/speps/go-hashids v1.0.0
 ## explicit
 github.com/speps/go-hashids
-# github.com/zero-pkg/tpl v0.0.0-20220331052707-853f93528e74
+# github.com/zero-pkg/tpl v1.0.0
 ## explicit; go 1.17
 github.com/zero-pkg/tpl
 # go.etcd.io/bbolt v1.3.6

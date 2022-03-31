@@ -5,26 +5,27 @@
 [![Docker Automated build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)](https://hub.docker.com/r/dotzero/pad/)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/dotzero/pad/blob/master/LICENSE)
 
-Pad is a standalone version of cloud notepad. Allows to share any text data by unique links.
-Written in Go and Bolt as embedded key/value database.
+Pad is a standalone version of Cloud Notepad. Allows you to share any text data via unique links.
+
+Data stored in [boltdb](https://github.com/etcd-io/bbolt) (embedded key/value database) files under `PAD_DB_PATH`.
 
 ![](https://raw.githubusercontent.com/dotzero/pad/master/web/images/screenshot.png)
 
-## Running container
+## Running container in Docker
 
 ```bash
-> docker run -d --rm --name pad_app \
+docker run -d --rm --name pad \
     -p "8080:8080" \
     -e PAD_SECRET=random_salt_here \
     -e PAD_PORT=8080 \
     dotzero/pad
 ```
 
-### Running container with `docker-compose`
+### Running container with Docker Compose
 
 Create a `docker-compose.yml` file:
 
-```
+```yaml
 version: "3"
 services:
   pad:
@@ -49,12 +50,20 @@ Run `docker-compose up -d`, wait for it to initialize completely, and visit `htt
 ### Build container
 
 ```bash
-> docker build -t dotzero/pad .
+docker build -t dotzero/pad .
 ```
 
-## Usage
+## How to run it locally
 
 ```
+git clone https://github.com/dotzero/pad
+cd pad
+go run .
+```
+
+### Command line options
+
+```bash
 Usage:
   pad [OPTIONS]
 
@@ -71,37 +80,13 @@ Help Options:
   -h, --help     Show this help message
 ```
 
-## Environment variables
+### Environment variables
 
-### PAD_HOST
-
-* *default:* `0.0.0.0`
-
-Listening address
-
-### PAD_PORT
-
-* *default:* `8080`
-
-Listening port.
-
-### PAD_DB_PATH
-
-* *default:* `$PWD/db`
-
-Path to BoltDB database. It represents a consistent snapshot of your data.
-
-### PAD_ASSETS_PATH
-
-* *default:* `$PWD/web`
-
-Path to web assets, templates and static files.
-
-### PAD_SECRET
-
-* *default:* `empty`
-
-Salt that using to generate hashids. Strongly recommend to replace with your own value.
+* `PAD_HOST` (*default:* `0.0.0.0`) - listening address
+* `PAD_PORT` (*default:* `8080`) - listening port
+* `PAD_DB_PATH` (*default:* `$PWD/db`) - path to BoltDB database. It represents a consistent snapshot of your data
+* `PAD_ASSETS_PATH` (*default:* `$PWD/web`) - path to web assets, templates and static files.
+* `PAD_SECRET` (*default:* `empty`) - salt that using to generate hashids. **Strongly** recommend to replace with your own value
 
 ## License
 
