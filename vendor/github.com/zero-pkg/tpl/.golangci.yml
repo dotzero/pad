@@ -1,0 +1,53 @@
+# Run: golangci-lint run
+# https://golangci-lint.run/usage/linters/
+# https://github.com/golangci/golangci-lint/blob/master/.golangci.example.yml
+linters:
+  disable-all: true
+  enable:
+    - asciicheck
+    - bodyclose
+    - deadcode
+    - depguard
+    - dogsled
+    - errcheck
+    - exhaustive
+    - exportloopref
+    - funlen
+    - gochecknoglobals
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gocyclo
+    - goimports
+    - gofmt
+    - gofumpt
+    - goheader
+    - gomnd
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - lll
+    - misspell
+    - nakedret
+    - nestif
+    - noctx
+    - nolintlint
+    - prealloc
+    - revive
+    - rowserrcheck
+    - sqlclosecheck
+    - staticcheck
+    - structcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unused
+    - varcheck
+    - whitespace
+    - wsl
+
+linters-settings:
+  goimports:
+    local-prefixes: github.com/zero-pkg/tpl

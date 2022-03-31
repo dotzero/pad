@@ -1,6 +1,6 @@
 # Pad
 
-[![Go](https://github.com/dotzero/pad/actions/workflows/go.yml/badge.svg)](https://github.com/dotzero/pad/actions/workflows/go.yml)
+[![build](https://github.com/dotzero/pad/actions/workflows/ci-build.yml/badge.svg)](https://github.com/dotzero/pad/actions/workflows/ci-build.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/dotzero/pad)](https://goreportcard.com/report/github.com/dotzero/pad)
 [![Docker Automated build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)](https://hub.docker.com/r/dotzero/pad/)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/dotzero/pad/blob/master/LICENSE)

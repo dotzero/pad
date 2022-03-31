@@ -11,6 +11,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
+	"github.com/zero-pkg/tpl"
 
 	"github.com/dotzero/pad/handlers"
 	"github.com/dotzero/pad/hash"
@@ -32,6 +33,7 @@ type App struct {
 	Opts
 	Storage     padStorage
 	HashEncoder hashEncoder
+	Templates   *tpl.Templates
 }
 
 // New prepares application and return it
@@ -40,15 +42,16 @@ func New(opts Opts) (*App, error) {
 		return nil, err
 	}
 
-	boltBackend, err := storage.New(opts.BoltPath, "pad.db")
+	store, err := storage.New(opts.BoltPath, "pad.db")
 	if err != nil {
 		return nil, err
 	}
 
 	return &App{
 		Opts:        opts,
-		Storage:     boltBackend,
+		Storage:     store,
 		HashEncoder: hash.New(opts.SecretKey, 3),
+		Templates:   tpl.Must(tpl.New().ParseDir(filepath.Join(opts.WebPath, "templates"), ".html")),
 	}, nil
 }
 
@@ -72,7 +75,7 @@ func (a *App) routes() chi.Router {
 
 	router.Get("/", handlers.Redirect(a.Storage, a.HashEncoder))
 	router.Get("/raw/{padname}", handlers.Raw(a.Storage))
-	router.Get("/{padname}", handlers.Get(a.Storage, filepath.Join(a.Opts.WebPath, "templates/main.html")))
+	router.Get("/{padname}", handlers.Get(a.Storage, a.Templates))
 	router.Post("/{padname}", handlers.Set(a.Storage))
 
 	router.Get("/robots.txt", func(w http.ResponseWriter, r *http.Request) {
