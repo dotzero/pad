@@ -43,7 +43,7 @@ func New(opts Opts) (*App, error) {
 		return nil, err
 	}
 
-	h := hash.New(opts.SecretKey, 3)
+	h := hash.New(opts.SecretKey, 3) // nolint
 
 	t, err := tpl.New().ParseDir(filepath.Join(opts.AssetsPath, templatesDir), templatesExt)
 	if err != nil {
@@ -64,6 +64,7 @@ func (a *App) Run() error {
 	log.Printf("[INFO] http server listen at: http://" + addr)
 
 	router := a.routes()
+
 	return http.ListenAndServe(addr, router)
 }
 
@@ -102,9 +103,11 @@ func makeDirs(dirs ...string) error {
 		if err == nil {
 			return true, nil
 		}
+
 		if os.IsNotExist(err) {
 			return false, nil
 		}
+
 		return true, err
 	}
 
@@ -113,22 +116,26 @@ func makeDirs(dirs ...string) error {
 		if err != nil {
 			return fmt.Errorf("can't check directory status for %s", dir)
 		}
+
 		if !ex {
-			if e := os.MkdirAll(dir, 0700); e != nil {
+			if e := os.MkdirAll(dir, 0700); e != nil { // nolint
 				return fmt.Errorf("can't make directory %s", dir)
 			}
 		}
 	}
+
 	return nil
 }
 
 func fileServer(r chi.Router, path string, root http.FileSystem) {
 	origPath := path
 	fs := http.StripPrefix(path, http.FileServer(root))
+
 	if path != "/" && path[len(path)-1] != '/' {
 		r.Get(path, http.RedirectHandler(path+"/", http.StatusMovedPermanently).ServeHTTP)
 		path += "/"
 	}
+
 	path += "*"
 
 	r.Get(path, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

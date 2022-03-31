@@ -14,6 +14,7 @@ func TestNew(t *testing.T) {
 
 	tmpdir, err := os.MkdirTemp("", "padtest")
 	is.NoErr(err)
+
 	defer os.RemoveAll(tmpdir)
 
 	app, err := New(Opts{

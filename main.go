@@ -32,6 +32,7 @@ type Opts struct {
 
 func main() {
 	var opts Opts
+
 	p := flags.NewParser(&opts, flags.Default)
 	if _, err := p.ParseArgs(os.Args[1:]); err != nil {
 		os.Exit(1)
@@ -64,6 +65,7 @@ func setupLog(verbose bool) {
 
 	if verbose {
 		log.SetFlags(log.LstdFlags | log.Lshortfile)
+
 		filter.MinLevel = logutils.LogLevel("DEBUG")
 	}
 
