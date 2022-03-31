@@ -21,15 +21,13 @@ var (
 
 // Opts with command line flags and env
 type Opts struct {
-	BoltPath  string `long:"db" env:"PAD_DB_PATH" default:"./db" description:"path to database"`
-	SecretKey string `long:"secret" env:"PAD_SECRET" description:"secret key"`
-
-	Host    string `long:"host" env:"PAD_HOST" default:"0.0.0.0" description:"host"`
-	Port    int    `long:"port" env:"PAD_PORT" default:"8080" description:"port"`
-	WebPath string `long:"path" env:"PAD_PATH" default:"./web" description:"path to web assets"`
-
-	Verbose bool `short:"v" long:"verbose" description:"enable verbose logging"`
-	Version bool `long:"version" description:"show the version number and information"`
+	Host         string `long:"host" env:"PAD_HOST" default:"0.0.0.0" description:"listening address"`
+	Port         int    `long:"port" env:"PAD_PORT" default:"8080" description:"listening port"`
+	DatabasePath string `long:"db" env:"PAD_DB_PATH" default:"db" description:"path to database files"`
+	AssetsPath   string `long:"path" env:"PAD_ASSETS_PATH" default:"web" description:"path to web assets"`
+	SecretKey    string `long:"secret" env:"PAD_SECRET" description:"the shared secret key used to generate ids"`
+	Verbose      bool   `long:"verbose" description:"verbose logging"`
+	Version      bool   `short:"v" long:"version" description:"show the version number"`
 }
 
 func main() {

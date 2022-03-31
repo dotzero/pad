@@ -88,7 +88,7 @@ func mockRouter(s *storage.MockStorage) chi.Router {
 		Storage:     s,
 		HashEncoder: hash.New("", 3),
 		Opts: Opts{
-			WebPath: "./web",
+			AssetsPath: "./web",
 		},
 	}
 

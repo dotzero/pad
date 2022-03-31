@@ -30,4 +30,8 @@ fmt:
 vet:
 	go vet ./...
 
-.PHONY: build install test clean fmt vet
+vendor:
+	go mod tidy
+	go mod vendor
+
+.PHONY: build install test clean fmt vet vendor

@@ -38,11 +38,11 @@ type App struct {
 
 // New prepares application and return it
 func New(opts Opts) (*App, error) {
-	if err := makeDirs(opts.BoltPath); err != nil {
+	if err := makeDirs(opts.DatabasePath); err != nil {
 		return nil, err
 	}
 
-	store, err := storage.New(opts.BoltPath, "pad.db")
+	store, err := storage.New(opts.DatabasePath, "pad.db")
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func New(opts Opts) (*App, error) {
 		Opts:        opts,
 		Storage:     store,
 		HashEncoder: hash.New(opts.SecretKey, 3),
-		Templates:   tpl.Must(tpl.New().ParseDir(filepath.Join(opts.WebPath, "templates"), ".html")),
+		Templates:   tpl.Must(tpl.New().ParseDir(filepath.Join(opts.AssetsPath, "templates"), ".html")),
 	}, nil
 }
 
@@ -83,11 +83,11 @@ func (a *App) routes() chi.Router {
 	})
 
 	router.Get("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, filepath.Join(a.Opts.WebPath, "/favicon.ico"))
+		http.ServeFile(w, r, filepath.Join(a.Opts.AssetsPath, "/favicon.ico"))
 	})
 
 	// file server for static content from /assets
-	addFileServer(router, "/assets", http.Dir(a.Opts.WebPath))
+	addFileServer(router, "/assets", http.Dir(a.Opts.AssetsPath))
 
 	return router
 }

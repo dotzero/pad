@@ -56,13 +56,13 @@ Usage:
   pad [OPTIONS]
 
 Application Options:
-      --db=      path to database (default: ./db) [$PAD_DB_PATH]
-      --secret=  secret key [$PAD_SECRET]
-      --host=    host (default: 0.0.0.0) [$PAD_HOST]
-      --port=    port (default: 8080) [$PAD_PORT]
-      --path=    path to web assets (default: ./web) [$PAD_PATH]
-  -v, --verbose  enable verbose logging
-      --version  show the version number and information
+      --host=    listening address (default: 0.0.0.0) [$PAD_HOST]
+      --port=    listening port (default: 8080) [$PAD_PORT]
+      --db=      path to database files (default: db) [$PAD_DB_PATH]
+      --path=    path to web assets (default: web) [$PAD_ASSETS_PATH]
+      --secret=  the shared secret key used to generate ids [$PAD_SECRET]
+      --verbose  verbose logging
+  -v, --version  show the version number
 
 Help Options:
   -h, --help     Show this help message
@@ -70,33 +70,35 @@ Help Options:
 
 ## Environment variables
 
+### PAD_HOST
+
+* *default:* `0.0.0.0`
+
+Listening address
+
+### PAD_PORT
+
+* *default:* `8080`
+
+Listening port.
+
 ### PAD_DB_PATH
 
-* *default:* `./db`
+* *default:* `$PWD/db`
 
 Path to BoltDB database. It represents a consistent snapshot of your data.
+
+### PAD_ASSETS_PATH
+
+* *default:* `$PWD/web`
+
+Path to web assets, templates and static files.
 
 ### PAD_SECRET
 
 * *default:* `empty`
 
 Salt that using to generate hashids. Strongly recommend to replace with your own value.
-
-### PAD_HOST
-
-* *default:* `0.0.0.0`
-
-### PAD_PORT
-
-* *default:* `8080`
-
-This port **must** match the port that is exposed via Docker.
-
-### PAD_PATH
-
-* *default:* `./web`
-
-Path to web assets, templates and static directories.
 
 ## License
 
