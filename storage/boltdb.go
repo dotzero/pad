@@ -47,9 +47,9 @@ func New(boltPath ...string) (*BoltStorage, error) {
 }
 
 // Get returns a content of the pad
-func (c *BoltStorage) Get(name string) (value string, err error) {
-	return value, c.db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(c.bucketPads)
+func (s *BoltStorage) Get(name string) (value string, err error) {
+	return value, s.db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(s.bucketPads)
 		v := b.Get([]byte(name))
 		value = string(v[:])
 
@@ -58,9 +58,9 @@ func (c *BoltStorage) Get(name string) (value string, err error) {
 }
 
 // Set update a content of the pad
-func (c *BoltStorage) Set(name string, value string) error {
-	return c.db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket(c.bucketPads)
+func (s *BoltStorage) Set(name string, value string) error {
+	return s.db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket(s.bucketPads)
 
 		return b.Put([]byte(name), []byte(value))
 	})
@@ -75,6 +75,11 @@ func (c *BoltStorage) NextCounter() (next uint64, err error) {
 
 		return b.Put(key, itob(next))
 	})
+}
+
+// Path returns the path to currently open database file
+func (s *BoltStorage) Path() string {
+	return s.db.Path()
 }
 
 func increment(v []byte) uint64 {

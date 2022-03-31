@@ -18,21 +18,17 @@ import (
 	"github.com/dotzero/pad/storage"
 )
 
-type hashEncoder interface {
-	Encode(num int64) string
-}
+const (
+	databaseFile = "pad.db"
+	templatesDir = "templates"
+	templatesExt = ".html"
+)
 
-type padStorage interface {
-	Get(name string) (value string, err error)
-	Set(name string, value string) error
-	NextCounter() (next uint64, err error)
-}
-
-// App is a Pad app
+// App is a Pad application
 type App struct {
 	Opts
-	Storage     padStorage
-	HashEncoder hashEncoder
+	Storage     *storage.BoltStorage
+	HashEncoder *hash.Hash
 	Templates   *tpl.Templates
 }
 
@@ -42,16 +38,23 @@ func New(opts Opts) (*App, error) {
 		return nil, err
 	}
 
-	store, err := storage.New(opts.DatabasePath, "pad.db")
+	s, err := storage.New(opts.DatabasePath, databaseFile)
+	if err != nil {
+		return nil, err
+	}
+
+	h := hash.New(opts.SecretKey, 3)
+
+	t, err := tpl.New().ParseDir(filepath.Join(opts.AssetsPath, templatesDir), templatesExt)
 	if err != nil {
 		return nil, err
 	}
 
 	return &App{
 		Opts:        opts,
-		Storage:     store,
-		HashEncoder: hash.New(opts.SecretKey, 3),
-		Templates:   tpl.Must(tpl.New().ParseDir(filepath.Join(opts.AssetsPath, "templates"), ".html")),
+		Storage:     s,
+		HashEncoder: h,
+		Templates:   t,
 	}, nil
 }
 
@@ -87,7 +90,7 @@ func (a *App) routes() chi.Router {
 	})
 
 	// file server for static content from /assets
-	addFileServer(router, "/assets", http.Dir(a.Opts.AssetsPath))
+	fileServer(router, "/assets", http.Dir(a.Opts.AssetsPath))
 
 	return router
 }
@@ -119,7 +122,7 @@ func makeDirs(dirs ...string) error {
 	return nil
 }
 
-func addFileServer(r chi.Router, path string, root http.FileSystem) {
+func fileServer(r chi.Router, path string, root http.FileSystem) {
 	origPath := path
 	fs := http.StripPrefix(path, http.FileServer(root))
 	if path != "/" && path[len(path)-1] != '/' {
