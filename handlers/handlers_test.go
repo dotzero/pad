@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"bytes"
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -105,7 +106,12 @@ func testRequest(
 	address string,
 	body string,
 ) (*httptest.ResponseRecorder, error) {
-	req, err := http.NewRequest(method, address, bytes.NewBuffer([]byte(body)))
+	req, err := http.NewRequestWithContext(
+		context.Background(),
+		method,
+		address,
+		bytes.NewBuffer([]byte(body)),
+	)
 	if err != nil {
 		return nil, err
 	}

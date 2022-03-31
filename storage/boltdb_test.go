@@ -128,9 +128,11 @@ func tempfile() string {
 	if err != nil {
 		panic(err)
 	}
+
 	if err := f.Close(); err != nil {
 		panic(err)
 	}
+
 	if err := os.Remove(f.Name()); err != nil {
 		panic(err)
 	}
@@ -141,8 +143,10 @@ func tempfile() string {
 func randomString(n int) string {
 	letterBytes := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	b := make([]byte, n)
+
 	for i := range b {
 		b[i] = letterBytes[rand.Intn(len(letterBytes))]
 	}
+
 	return string(b)
 }

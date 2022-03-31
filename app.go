@@ -43,7 +43,7 @@ func New(opts Opts) (*App, error) {
 		return nil, err
 	}
 
-	h := hash.New(opts.SecretKey, 3) // nolint
+	h := hash.New(opts.SecretKey, 3)
 
 	t, err := tpl.New().ParseDir(filepath.Join(opts.AssetsPath, templatesDir), templatesExt)
 	if err != nil {

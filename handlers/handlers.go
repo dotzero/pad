@@ -18,6 +18,7 @@ func Redirect(s storage, e encoder) http.HandlerFunc {
 		if err != nil {
 			render.Status(r, http.StatusInternalServerError)
 			render.PlainText(w, r, err.Error())
+
 			return
 		}
 
@@ -35,10 +36,12 @@ func Get(s storage, t tpl) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		padname := chi.URLParam(r, urlPad)
+
 		content, err := s.Get(padname)
 		if err != nil {
 			render.Status(r, http.StatusInternalServerError)
 			render.PlainText(w, r, err.Error())
+
 			return
 		}
 
@@ -57,10 +60,12 @@ func Get(s storage, t tpl) http.HandlerFunc {
 func Raw(s storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		padname := chi.URLParam(r, urlPad)
+
 		content, err := s.Get(padname)
 		if err != nil {
 			render.Status(r, http.StatusInternalServerError)
 			render.PlainText(w, r, err.Error())
+
 			return
 		}
 
@@ -78,10 +83,12 @@ func Set(s storage) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		var err error
+
 		err = r.ParseForm()
 		if err != nil {
 			render.Status(r, http.StatusBadRequest)
 			render.JSON(w, r, &response{Message: "error"})
+
 			return
 		}
 
@@ -92,6 +99,7 @@ func Set(s storage) http.HandlerFunc {
 		if err != nil {
 			render.Status(r, http.StatusBadRequest)
 			render.JSON(w, r, &response{Message: "error", Padname: padname})
+
 			return
 		}
 

@@ -16,7 +16,7 @@ type BoltStorage struct {
 
 // New returns a wrapper over Bolt DB
 func New(boltPath ...string) (*BoltStorage, error) {
-	db, err := bolt.Open(filepath.Join(boltPath...), 0666, nil)
+	db, err := bolt.Open(filepath.Join(boltPath...), 0666, nil) // nolint
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (s *BoltStorage) Get(name string) (value string, err error) {
 	return value, s.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(s.bucketPads)
 		v := b.Get([]byte(name))
-		value = string(v[:])
+		value = string(v)
 
 		return nil
 	})
@@ -67,9 +67,9 @@ func (s *BoltStorage) Set(name string, value string) error {
 }
 
 // NextCounter returns next number of the counter
-func (c *BoltStorage) NextCounter() (next uint64, err error) {
-	return next, c.db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket(c.bucketSettings)
+func (s *BoltStorage) NextCounter() (next uint64, err error) {
+	return next, s.db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket(s.bucketSettings)
 		key := []byte("counter")
 		next = increment(b.Get(key))
 
@@ -86,11 +86,13 @@ func increment(v []byte) uint64 {
 	if len(v) == 0 {
 		return 1
 	}
+
 	return binary.LittleEndian.Uint64(v) + 1
 }
 
 func itob(v uint64) []byte {
 	bs := make([]byte, 8)
 	binary.LittleEndian.PutUint64(bs, v)
+
 	return bs
 }
