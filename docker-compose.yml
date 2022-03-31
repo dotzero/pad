@@ -2,13 +2,21 @@ version: "3"
 services:
   pad:
     build: .
-    container_name: pad-app
+    container_name: pad
     restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     ports:
       - "8080:8080"
     environment:
-      PAD_DB_PATH: /app/db
+      PAD_HOST: "0.0.0.0"
+      PAD_PORT: "8080"
       PAD_SECRET: random_salt_here
-      PAD_PORT: 8080
     volumes:
-      - ./db:/app/db
+      - pad_db:/app/db
+
+volumes:
+  pad_db:

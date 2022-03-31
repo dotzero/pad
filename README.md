@@ -28,17 +28,20 @@ Create a `docker-compose.yml` file:
 version: "3"
 services:
   pad:
-    image: dotzero/pad
-    container_name: pad_app
+    build: .
+    container_name: pad
     restart: always
     ports:
       - "8080:8080"
     environment:
-      PAD_DB_PATH: /app/db
+      PAD_HOST: "0.0.0.0"
+      PAD_PORT: "8080"
       PAD_SECRET: random_salt_here
-      PAD_PORT: 8080
     volumes:
-      - ./db:/app/db
+      - pad_db:/app/db
+
+volumes:
+  pad_db:
 ```
 
 Run `docker-compose up -d`, wait for it to initialize completely, and visit `http://localhost:8080`

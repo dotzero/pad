@@ -30,10 +30,10 @@ WORKDIR /app
 COPY --from=build-env /go/bin/pad /app
 COPY --from=build-env /build/web/ /app/web/
 
-ENV PAD_DB_PATH "/app/db"
-ENV PAD_SECRET "true_random_salt"
 ENV PAD_HOST "0.0.0.0"
 ENV PAD_PORT "8080"
+ENV PAD_DB_PATH "/app/db"
+ENV PAD_SECRET "true_random_salt"
 
 EXPOSE ${PAD_PORT}
 
