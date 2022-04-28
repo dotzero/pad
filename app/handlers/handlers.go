@@ -16,13 +16,12 @@ func Redirect(s storage, e encoder) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cnt, err := s.NextCounter()
 		if err != nil {
-			render.Status(r, http.StatusInternalServerError)
-			render.PlainText(w, r, err.Error())
-
+			renderError(w, r, err)
 			return
 		}
 
 		hash := e.Encode(int64(cnt))
+
 		http.Redirect(w, r, "/"+hash, http.StatusFound)
 	}
 }
@@ -39,9 +38,7 @@ func Get(s storage, t tpl) http.HandlerFunc {
 
 		content, err := s.Get(padname)
 		if err != nil {
-			render.Status(r, http.StatusInternalServerError)
-			render.PlainText(w, r, err.Error())
-
+			renderError(w, r, err)
 			return
 		}
 
@@ -50,8 +47,7 @@ func Get(s storage, t tpl) http.HandlerFunc {
 			Content: content,
 		})
 		if err != nil {
-			render.Status(r, http.StatusInternalServerError)
-			render.PlainText(w, r, err.Error())
+			renderError(w, r, err)
 		}
 	}
 }
@@ -63,9 +59,7 @@ func Raw(s storage) http.HandlerFunc {
 
 		content, err := s.Get(padname)
 		if err != nil {
-			render.Status(r, http.StatusInternalServerError)
-			render.PlainText(w, r, err.Error())
-
+			renderError(w, r, err)
 			return
 		}
 
@@ -82,24 +76,16 @@ func Set(s storage) http.HandlerFunc {
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		var err error
-
-		err = r.ParseForm()
-		if err != nil {
-			render.Status(r, http.StatusBadRequest)
-			render.JSON(w, r, &response{Message: "error"})
-
+		if err := r.ParseForm(); err != nil {
+			renderError(w, r, err)
 			return
 		}
 
 		padname := chi.URLParam(r, urlPad)
 		content := r.Form.Get("t")
 
-		err = s.Set(padname, content)
-		if err != nil {
-			render.Status(r, http.StatusBadRequest)
-			render.JSON(w, r, &response{Message: "error", Padname: padname})
-
+		if err := s.Set(padname, content); err != nil {
+			renderError(w, r, err)
 			return
 		}
 

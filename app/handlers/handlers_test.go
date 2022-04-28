@@ -1,10 +1,7 @@
 package handlers
 
 import (
-	"bytes"
-	"context"
 	"net/http"
-	"net/http/httptest"
 	"net/url"
 	"strings"
 	"testing"
@@ -98,26 +95,4 @@ func TestHandleSet(t *testing.T) {
 	is.Equal(w.Code, http.StatusOK)
 	is.True(strings.Contains(w.Body.String(), `"message":"ok"`))
 	is.True(strings.Contains(w.Body.String(), `"padname":"foo"`))
-}
-
-func testRequest(
-	handler http.Handler,
-	method string,
-	address string,
-	body string,
-) (*httptest.ResponseRecorder, error) {
-	req, err := http.NewRequestWithContext(
-		context.Background(),
-		method,
-		address,
-		bytes.NewBuffer([]byte(body)),
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	resp := httptest.NewRecorder()
-	handler.ServeHTTP(resp, req)
-
-	return resp, nil
 }

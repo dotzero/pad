@@ -7,18 +7,14 @@
 
 Pad is a standalone version of Cloud Notepad. Allows you to share any text data via unique links.
 
-Data stored in [boltdb](https://github.com/etcd-io/bbolt) (embedded key/value database) files under `PAD_DB_PATH`.
+Data stored in [boltdb](https://github.com/etcd-io/bbolt) (embedded key/value database) files under `BOLT_PATH`.
 
-![](https://raw.githubusercontent.com/dotzero/pad/master/web/images/screenshot.png)
+![](https://raw.githubusercontent.com/dotzero/pad/master/static/images/screenshot.png)
 
 ## Running container in Docker
 
 ```bash
-docker run -d --rm --name pad \
-    -p "8080:8080" \
-    -e PAD_SECRET=random_salt_here \
-    -e PAD_PORT=8080 \
-    dotzero/pad
+docker run -d --rm --name pad -p "8080:8080" dotzero/pad
 ```
 
 ### Running container with Docker Compose
@@ -60,7 +56,7 @@ docker build -t dotzero/pad .
 
 ## How to run it locally
 
-```
+```bash
 git clone https://github.com/dotzero/pad
 cd pad
 go run .
@@ -91,9 +87,11 @@ Help Options:
 
 * `PAD_HOST` (*default:* `0.0.0.0`) - listening address
 * `PAD_PORT` (*default:* `8080`) - listening port
-* `PAD_DB_PATH` (*default:* `$PWD/db`) - path to BoltDB database. It represents a consistent snapshot of your data
-* `PAD_ASSETS_PATH` (*default:* `$PWD/web`) - path to web assets, templates and static files.
+* `BOLT_PATH` (*default:* `./var`) - path to BoltDB database (it represents a consistent snapshot of your data)
 * `PAD_SECRET` (*default:* `empty`) - salt that using to generate hashids. **Strongly** recommend to replace with your own value
+* `STATIC_PATH` (*default:* `./static`) - path to web assets
+* `TPL_PATH` (*default:* `./templates`) - path to templates
+* `TPL_EXT` (*default:* `.html`) - templates files extensions
 
 ## License
 
