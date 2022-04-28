@@ -29,9 +29,14 @@ Create a `docker-compose.yml` file:
 version: "3"
 services:
   pad:
-    build: .
+    image: ghcr.io/dotzero/pad:latest
     container_name: pad
     restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     ports:
       - "8080:8080"
     environment:
@@ -68,16 +73,18 @@ Usage:
   pad [OPTIONS]
 
 Application Options:
-      --host=    listening address (default: 0.0.0.0) [$PAD_HOST]
-      --port=    listening port (default: 8080) [$PAD_PORT]
-      --db=      path to database files (default: db) [$PAD_DB_PATH]
-      --path=    path to web assets (default: web) [$PAD_ASSETS_PATH]
-      --secret=  the shared secret key used to generate ids [$PAD_SECRET]
-      --verbose  verbose logging
-  -v, --version  show the version number
+      --host=        listening address (default: 0.0.0.0) [$PAD_HOST]
+      --port=        listening port (default: 8080) [$PAD_PORT]
+      --bolt-path=   parent directory for the bolt files (default: ./var) [$BOLT_PATH]
+      --secret=      the shared secret key used to generate ids [$PAD_SECRET]
+      --static-path= path to website assets (default: ./static) [$STATIC_PATH]
+      --tpl-path=    path to templates files (default: ./templates) [$TPL_PATH]
+      --tpl-ext=     templates files extensions (default: .html) [$TPL_EXT]
+      --verbose      verbose logging
+  -v, --version      show the version number
 
 Help Options:
-  -h, --help     Show this help message
+  -h, --help         Show this help message
 ```
 
 ### Environment variables

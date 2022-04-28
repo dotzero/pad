@@ -28,11 +28,12 @@ FROM alpine:3.15
 
 WORKDIR /app
 COPY --from=build-env /go/bin/pad /app
-COPY --from=build-env /build/web/ /app/web/
+COPY --from=build-env /build/static/ /app/static/
+COPY --from=build-env /build/templates/ /app/templates/
 
 ENV PAD_HOST "0.0.0.0"
 ENV PAD_PORT "8080"
-ENV PAD_DB_PATH "/app/db"
+ENV BOLT_PATH "/app/db"
 ENV PAD_SECRET "true_random_salt"
 
 EXPOSE ${PAD_PORT}

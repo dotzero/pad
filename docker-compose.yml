@@ -1,7 +1,7 @@
 version: "3"
 services:
   pad:
-    build: .
+    image: ghcr.io/dotzero/pad:latest
     container_name: pad
     restart: always
     logging:
