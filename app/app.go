@@ -58,7 +58,7 @@ func (a *App) Run(ctx context.Context, address string, port int) error {
 
 	go func() {
 		addr := fmt.Sprintf("%s:%d", address, port)
-		log.Printf("[INFO] http server listen at: http://" + addr)
+		log.Printf("[INFO] http server listen at: http://%s", addr)
 
 		err := a.httpServer.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {

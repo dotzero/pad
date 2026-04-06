@@ -1,4 +1,4 @@
-FROM golang:1.17-alpine AS build-env
+FROM golang:1.26-alpine AS build-env
 
 ARG VERSION
 ARG COMMIT_HASH
