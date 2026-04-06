@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/matryer/is"
-	hashids "github.com/speps/go-hashids"
+	hashids "github.com/speps/go-hashids/v2"
 )
 
 func TestNew(t *testing.T) {
@@ -13,9 +13,12 @@ func TestNew(t *testing.T) {
 	hd.Salt = "salt"
 	hd.MinLength = 5
 
-	exp := Hash{hashids.NewWithData(hd)}
-
+	hid, err := hashids.NewWithData(hd)
 	is := is.New(t)
+	is.NoErr(err)
+
+	exp := Hash{hid}
+
 	is.Equal(&exp, New("salt", 5))
 }
 

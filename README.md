@@ -1,23 +1,21 @@
 # Pad
 
-[![build](https://github.com/dotzero/pad/actions/workflows/ci-build.yml/badge.svg)](https://github.com/dotzero/pad/actions/workflows/ci-build.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/dotzero/pad)](https://goreportcard.com/report/github.com/dotzero/pad)
-[![Docker Automated build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)](https://hub.docker.com/r/dotzero/pad/)
+[![build](https://github.com/dotzero/pad/actions/workflows/ci.yml/badge.svg)](https://github.com/dotzero/pad/actions/workflows/ci.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/dotzero/pad/blob/master/LICENSE)
 
-Pad is a standalone version of Cloud Notepad. Allows you to share any text data via unique links.
+Pad is a standalone version of Cloud Notepad that lets you share text through unique links.
 
-Data stored in [boltdb](https://github.com/etcd-io/bbolt) (embedded key/value database) files under `BOLT_PATH`.
+Data is stored in [BoltDB](https://github.com/etcd-io/bbolt) files under `BOLT_PATH`.
 
 ![](https://raw.githubusercontent.com/dotzero/pad/master/static/images/screenshot.png)
 
-## Running container in Docker
+## Run with Docker
 
 ```bash
 docker run -d --rm --name pad -p "8080:8080" dotzero/pad
 ```
 
-### Running container with Docker Compose
+### Run with Docker Compose
 
 Create a `docker-compose.yml` file:
 
@@ -46,15 +44,15 @@ volumes:
   pad_db:
 ```
 
-Run `docker-compose up -d`, wait for it to initialize completely, and visit `http://localhost:8080`
+Run `docker compose up -d`, wait for the container to start, then open `http://localhost:8080`.
 
-### Build container
+### Build the container image
 
 ```bash
 docker build -t dotzero/pad .
 ```
 
-## How to run it locally
+## Run locally
 
 ```bash
 git clone https://github.com/dotzero/pad
@@ -85,14 +83,14 @@ Help Options:
 
 ### Environment variables
 
-* `PAD_HOST` (*default:* `0.0.0.0`) - listening address
-* `PAD_PORT` (*default:* `8080`) - listening port
-* `BOLT_PATH` (*default:* `./var`) - path to BoltDB database (it represents a consistent snapshot of your data)
-* `PAD_SECRET` (*default:* `empty`) - salt that using to generate hashids. **Strongly** recommend to replace with your own value
-* `STATIC_PATH` (*default:* `./static`) - path to web assets
-* `TPL_PATH` (*default:* `./templates`) - path to templates
-* `TPL_EXT` (*default:* `.html`) - templates files extensions
+- `PAD_HOST` (default: `0.0.0.0`) - Listening address.
+- `PAD_PORT` (default: `8080`) - Listening port.
+- `BOLT_PATH` (default: `./var`) - Path to the BoltDB data directory.
+- `PAD_SECRET` (default: empty) - Salt used to generate hashids. Replace it with your own secret in production.
+- `STATIC_PATH` (default: `./static`) - Path to static assets.
+- `TPL_PATH` (default: `./templates`) - Path to template files.
+- `TPL_EXT` (default: `.html`) - Template file extension.
 
 ## License
 
-http://www.opensource.org/licenses/mit-license.php
+[MIT](http://www.opensource.org/licenses/mit-license.php)

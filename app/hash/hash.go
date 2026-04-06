@@ -1,7 +1,7 @@
 package hash
 
 import (
-	hashids "github.com/speps/go-hashids"
+	hashids "github.com/speps/go-hashids/v2"
 )
 
 // Hash is a wrapper over HashID
@@ -15,8 +15,10 @@ func New(salt string, length int) *Hash {
 	hd.Salt = salt
 	hd.MinLength = length
 
+	hid, _ := hashids.NewWithData(hd)
+
 	return &Hash{
-		hashids.NewWithData(hd),
+		hid,
 	}
 }
 
