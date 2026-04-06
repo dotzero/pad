@@ -17,5 +17,5 @@ type storage interface {
 }
 
 type tpl interface {
-	Execute(wr io.Writer, data interface{}) error
+	Execute(wr io.Writer, data any) error
 }

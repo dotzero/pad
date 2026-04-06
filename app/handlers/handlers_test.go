@@ -96,3 +96,26 @@ func TestHandleSet(t *testing.T) {
 	is.True(strings.Contains(w.Body.String(), `"message":"ok"`))
 	is.True(strings.Contains(w.Body.String(), `"padname":"foo"`))
 }
+
+func TestHandleSetTooLarge(t *testing.T) {
+	is := is.New(t)
+	s := &storageMock{
+		SetFunc: func(name string, value string) error {
+			return nil
+		},
+	}
+
+	handler := Set(s)
+
+	router := chi.NewRouter()
+	router.Post("/{padname}", handler)
+
+	form := url.Values{}
+	form.Set("t", strings.Repeat("a", maxFormBodySize))
+
+	w, err := testRequest(router, "POST", "/foo", form.Encode())
+	is.NoErr(err)
+	is.Equal(w.Code, http.StatusRequestEntityTooLarge)
+	is.True(strings.Contains(w.Body.String(), "http: request body too large"))
+	is.Equal(len(s.SetCalls()), 0)
+}

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -8,7 +9,8 @@ import (
 )
 
 const (
-	urlPad = "padname"
+	urlPad          = "padname"
+	maxFormBodySize = 1 << 20 // 1 MiB
 )
 
 // Redirect handle redirects to new pads
@@ -20,7 +22,7 @@ func Redirect(s storage, e encoder) http.HandlerFunc {
 			return
 		}
 
-		hash := e.Encode(int64(cnt))
+		hash := e.Encode(int64(cnt)) //nolint:gosec
 
 		http.Redirect(w, r, "/"+hash, http.StatusFound)
 	}
@@ -76,8 +78,19 @@ func Set(s storage) http.HandlerFunc {
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
+		r.Body = http.MaxBytesReader(w, r.Body, maxFormBodySize)
+
 		if err := r.ParseForm(); err != nil {
+			var maxBytesErr *http.MaxBytesError
+			if errors.As(err, &maxBytesErr) {
+				render.Status(r, http.StatusRequestEntityTooLarge)
+				render.JSON(w, r, map[string]string{"error": err.Error()})
+
+				return
+			}
+
 			renderError(w, r, err)
+
 			return
 		}
 

@@ -127,7 +127,7 @@ func makeDirs(dirs ...string) error {
 		}
 
 		if !ex {
-			if e := os.MkdirAll(dir, 0700); e != nil { // nolint
+			if e := os.MkdirAll(dir, 0o700); e != nil {
 				return fmt.Errorf("can't make directory %s", dir)
 			}
 		}

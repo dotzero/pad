@@ -42,11 +42,11 @@ func (a *App) routes() chi.Router {
 	})
 
 	router.Get("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, filepath.Join(a.CommonOpts.StaticPath, "/favicon.ico"))
+		http.ServeFile(w, r, filepath.Join(a.StaticPath, "/favicon.ico"))
 	})
 
 	// file server for static content from /assets
-	fileServer(router, "/assets", http.Dir(a.CommonOpts.StaticPath))
+	fileServer(router, "/assets", http.Dir(a.StaticPath))
 
 	return router
 }
@@ -68,6 +68,7 @@ func fileServer(r chi.Router, path string, root http.FileSystem) {
 			http.NotFound(w, r)
 			return
 		}
+
 		fs.ServeHTTP(w, r)
 	}))
 }

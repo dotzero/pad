@@ -16,7 +16,7 @@ type BoltStorage struct {
 
 // New returns a wrapper over Bolt DB
 func New(boltPath ...string) (*BoltStorage, error) {
-	db, err := bolt.Open(filepath.Join(boltPath...), 0666, nil) // nolint
+	db, err := bolt.Open(filepath.Join(boltPath...), 0o666, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -29,6 +29,7 @@ func New(boltPath ...string) (*BoltStorage, error) {
 		if _, err := tx.CreateBucketIfNotExists(bucketSettings); err != nil {
 			return err
 		}
+
 		if _, err := tx.CreateBucketIfNotExists(bucketPads); err != nil {
 			return err
 		}

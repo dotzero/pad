@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"strconv"
@@ -32,6 +31,7 @@ func suiteSetPad(t *testing.T, b *BoltStorage, key string) {
 	err = b.db.View(func(tx *bolt.Tx) error {
 		v := tx.Bucket(b.bucketPads).Get([]byte(key))
 		is.Equal([]byte(exp), v)
+
 		return nil
 	})
 	is.NoErr(err)
@@ -56,9 +56,11 @@ func TestSetConcurrent(t *testing.T) {
 
 		go func(i int, b *BoltStorage) {
 			defer wg.Done()
+
 			suiteSetPad(t, b, strconv.Itoa(i))
 		}(i, backend)
 	}
+
 	wg.Wait()
 }
 
@@ -124,7 +126,7 @@ func newTestBackend() *BoltStorage {
 }
 
 func tempfile() string {
-	f, err := ioutil.TempFile("", "bolt-")
+	f, err := os.CreateTemp("", "bolt-")
 	if err != nil {
 		panic(err)
 	}
