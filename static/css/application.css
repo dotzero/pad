@@ -81,6 +81,10 @@ form {
   border-radius: 1px;
 }
 
+.toolbar_shell {
+  display: none;
+}
+
 .stack {
   position: absolute;
   top: 30px;
@@ -150,6 +154,27 @@ form {
   border-radius: 3px;
 }
 
+.toolbar {
+  display: flex;
+  gap: 10px;
+}
+
+.toolbar_button {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid #cfd5dc;
+  background: #f7f9fb;
+  color: #3a3b3c;
+  font: normal 14px Arial, Helvetica, sans-serif;
+  border-radius: 10px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.toolbar_button:active {
+  background: #e9edf2;
+}
+
 .stack .layer_1 .layer_2 .layer_3 .contents {
   width: 100%;
   height: 100%;
@@ -179,4 +204,46 @@ form {
   text-align: center;
   font: normal 18px Arial, sans-serif;
   color: #aaacb0;
+}
+
+@media (max-width: 640px) {
+  #loading {
+    top: 14px;
+    left: 18px;
+  }
+
+  .toolbar_shell {
+    display: block;
+    position: absolute;
+    top: 18px;
+    right: 16px;
+    left: 16px;
+    z-index: 2;
+  }
+
+  .stack {
+    top: 82px;
+    right: 16px;
+    bottom: 24px;
+    left: 16px;
+  }
+
+  .stack .layer_1 .layer_2 .layer_3 {
+    padding: 14px 14px 16px;
+  }
+
+  .toolbar {
+    gap: 8px;
+  }
+
+  .toolbar_button {
+    flex: 1;
+    min-height: 46px;
+    padding: 0 12px;
+    font-size: 15px;
+  }
+
+  .stack .layer_1 .layer_2 .layer_3 .contents {
+    font-size: 16px;
+  }
 }
