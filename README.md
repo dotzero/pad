@@ -7,7 +7,7 @@ Pad is a standalone version of Cloud Notepad that lets you share text through un
 
 Data is stored in [BoltDB](https://github.com/etcd-io/bbolt) files under `BOLT_PATH`.
 
-![](./images/screenshot.png)
+![](./static/images/screenshot.png)
 
 ## Run with Docker
 
