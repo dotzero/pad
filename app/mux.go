@@ -26,9 +26,9 @@ func (a *App) makeHTTPServer(address string, port int, router http.Handler) *htt
 func (a *App) routes() chi.Router {
 	router := chi.NewRouter()
 
+	router.Use(middleware.ClientIPFromRemoteAddr)
 	router.Use(middleware.Logger)
 	router.Use(middleware.NoCache)
-	router.Use(middleware.RealIP)
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.RedirectSlashes)
 

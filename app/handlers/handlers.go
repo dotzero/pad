@@ -79,6 +79,7 @@ func pad(s storage, t tpl, mode string) http.HandlerFunc {
 
 func renderMarkdown(content string) (template.HTML, error) {
 	var buf bytes.Buffer
+
 	markdown := goldmark.New(
 		goldmark.WithExtensions(extension.GFM),
 	)
