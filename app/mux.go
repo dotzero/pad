@@ -36,9 +36,9 @@ func (a *App) routes() chi.Router {
 		render.PlainText(w, r, "User-agent: *\n")
 	})
 
-	favicon := faviconHandler(a.StaticPath)
-	router.Get("/favicon.ico", favicon)
-	router.Get("/favicon.png", favicon)
+	for _, asset := range rootStaticAssets() {
+		router.Get("/"+asset, rootStaticAssetHandler(a.StaticPath, asset))
+	}
 
 	// file server for static content from /assets
 	fileServer(router, "/assets", http.Dir(a.StaticPath))
@@ -52,9 +52,26 @@ func (a *App) routes() chi.Router {
 	return router
 }
 
-func faviconHandler(staticPath string) http.HandlerFunc {
+func rootStaticAssets() []string {
+	return []string{
+		"apple-touch-icon.png",
+		"favicon-96x96.png",
+		"favicon.ico",
+		"favicon.png",
+		"favicon.svg",
+		"site.webmanifest",
+		"web-app-manifest-192x192.png",
+		"web-app-manifest-512x512.png",
+	}
+}
+
+func rootStaticAssetHandler(staticPath string, asset string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, filepath.Join(staticPath, "favicon.png"))
+		if strings.HasSuffix(asset, ".webmanifest") {
+			w.Header().Set("Content-Type", "application/manifest+json")
+		}
+
+		http.ServeFile(w, r, filepath.Join(staticPath, asset))
 	}
 }
 
