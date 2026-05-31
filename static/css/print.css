@@ -6,7 +6,12 @@ body {
   margin: 25px 50px;
 }
 
-#controls, .stack { display: none }
+a[aria-label="Pad home"],
+div:has(#copy_button),
+div:has(#copy_link_button),
+.stack {
+  display: none;
+}
 
 #printable_contents {
   font: normal 12px Monaco, 'Courier New', monospace;
