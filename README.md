@@ -1,5 +1,7 @@
 # Pad
 
+![](./static/logo.png)
+
 A dead-simple shared text pad.
 
 Paste text, get a link, share it with anyone.

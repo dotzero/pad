@@ -21,6 +21,9 @@ install:
 test:
 	go test ./...
 
+css:
+	npm run css:build
+
 clean:
 	if [ -f $(GOBIN)/$(BIN) ] ; then rm -f $(GOBIN)/$(BIN) ; fi
 
@@ -34,4 +37,4 @@ vendor:
 	go mod tidy
 	go mod vendor
 
-.PHONY: build install test clean fmt vet vendor
+.PHONY: build install test css clean fmt vet vendor

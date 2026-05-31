@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track-piece {
+    background: #f2f4f8;
+  }
+
+  ::-webkit-scrollbar-button:start:decrement,
+  ::-webkit-scrollbar-button:end:increment {
+    display: block;
+    height: 12px;
+    background-color: #d5d9df;
+  }
+
+  ::-webkit-scrollbar-thumb:vertical {
+    height: 25px;
+    background-color: #d5d9df;
+  }
+
+  ::-webkit-scrollbar-button:start:decrement {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-button:end:increment {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+
+  :focus {
+    border: none;
+    outline: 0;
+  }
+
+  *::-moz-focus-inner {
+    border: 0;
+  }
+
+  a img {
+    border: 0;
+  }
+
+  form {
+    display: inline;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+@layer components {
+  #loading {
+    background: url("../images/loading.gif") -1px -4px no-repeat transparent;
+    filter: alpha(opacity=40);
+  }
+
+  .stack.empty .pad-contents {
+    text-align: center;
+    font: normal 18px Arial, sans-serif;
+    color: #aaacb0;
+  }
+
+  .pad-contents.monospace {
+    font: normal 12px Monaco, "Courier New", monospace;
+    line-height: 18px;
+  }
+}
