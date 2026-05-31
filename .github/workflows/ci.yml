@@ -5,7 +5,8 @@ on:
   pull_request:
 
 jobs:
-  build:
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
 
     steps:
@@ -26,9 +27,16 @@ jobs:
         with:
           version: v2.12.2
 
-  build-images:
-    needs: build
+  docker:
+    name: Build and publish Docker image
     runs-on: ubuntu-latest
+    needs: lint
+    if: github.event_name != 'pull_request'
+
+    permissions:
+      contents: read
+      packages: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -37,27 +45,34 @@ jobs:
         uses: docker/setup-qemu-action@v4
 
       - name: Set up Docker Buildx
-        id: buildx
         uses: docker/setup-buildx-action@v4
 
-      - name: Available platforms
-        run: echo ${{ steps.buildx.outputs.platforms }}
+      - name: Login to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and deploy master image to ghcr.io and dockerhub
-        if: ${{ github.ref == 'refs/heads/master' }}
-        env:
-          GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
-          USERNAME: ${{ github.actor }}
-          GITHUB_SHA: ${{ github.sha }}
-          GITHUB_REF: ${{ github.ref }}
-        run: |
-          ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
-          echo "VERSION=${ref}, COMMIT_HASH=${GITHUB_SHA}"
-          echo ${GITHUB_PACKAGE_TOKEN} | docker login ghcr.io -u ${USERNAME} --password-stdin
-          echo ${DOCKER_HUB_TOKEN} | docker login -u ${USERNAME} --password-stdin
-          docker buildx build --push \
-              --build-arg CI=github --build-arg VERSION=${ref} --build-arg COMMIT_HASH=${GITHUB_SHA} \
-              --platform linux/amd64,linux/arm/v7,linux/arm64 \
-              -t ghcr.io/dotzero/pad:${ref} -t ghcr.io/dotzero/pad:latest \
-              -t dotzero/pad:${ref} -t dotzero/pad:latest .
+      - name: Login to Docker Hub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          build-args: |
+            CI=github
+            COMMIT_HASH=${{ github.sha }}
+          tags: |
+            ghcr.io/dotzero/pad:${{ github.ref_name }}
+            ghcr.io/dotzero/pad:latest
+            dotzero/pad:${{ github.ref_name }}
+            dotzero/pad:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

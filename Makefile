@@ -1,12 +1,10 @@
 GOBIN ?= $(shell go env GOPATH)/bin
 BIN := pad
 
-VERSION := $(shell git rev-parse --abbrev-ref HEAD)
 HASH := $(shell git rev-parse --short HEAD)
 DATE := $(shell date +%FT%T%z)
 
 LDFLAGS := "-s -w \
-	-X main.Version=$(VERSION) \
 	-X main.CommitHash=$(HASH) \
 	-X main.CompileDate=$(DATE)"
 

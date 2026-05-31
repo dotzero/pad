@@ -13,9 +13,7 @@ import (
 )
 
 var (
-	// Version is the version number or commit hash
 	// These variables should be set by the linker when compiling
-	Version = "0.0.0-unknown"
 	// CommitHash is the git hash of last commit
 	CommitHash = "Unknown"
 	// CompileDate is the date of build
@@ -44,7 +42,7 @@ func main() {
 	}
 
 	if opts.Version {
-		fmt.Printf("Version: %s\nCommit hash: %s\nCompile date: %s\n", Version, CommitHash, CompileDate)
+		fmt.Printf("Commit hash: %s\nCompile date: %s\n", CommitHash, CompileDate)
 		os.Exit(0)
 	}
 

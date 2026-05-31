@@ -9,19 +9,19 @@ import (
 
 // encoderMock is a mock implementation of encoder.
 //
-// 	func TestSomethingThatUsesencoder(t *testing.T) {
+//	func TestSomethingThatUsesencoder(t *testing.T) {
 //
-// 		// make and configure a mocked encoder
-// 		mockedencoder := &encoderMock{
-// 			EncodeFunc: func(num int64) string {
-// 				panic("mock out the Encode method")
-// 			},
-// 		}
+//		// make and configure a mocked encoder
+//		mockedencoder := &encoderMock{
+//			EncodeFunc: func(num int64) string {
+//				panic("mock out the Encode method")
+//			},
+//		}
 //
-// 		// use mockedencoder in code that requires encoder
-// 		// and then make assertions.
+//		// use mockedencoder in code that requires encoder
+//		// and then make assertions.
 //
-// 	}
+//	}
 type encoderMock struct {
 	// EncodeFunc mocks the Encode method.
 	EncodeFunc func(num int64) string
@@ -55,7 +55,8 @@ func (mock *encoderMock) Encode(num int64) string {
 
 // EncodeCalls gets all the calls that were made to Encode.
 // Check the length with:
-//     len(mockedencoder.EncodeCalls())
+//
+//	len(mockedencoder.EncodeCalls())
 func (mock *encoderMock) EncodeCalls() []struct {
 	Num int64
 } {
@@ -70,25 +71,25 @@ func (mock *encoderMock) EncodeCalls() []struct {
 
 // storageMock is a mock implementation of storage.
 //
-// 	func TestSomethingThatUsesstorage(t *testing.T) {
+//	func TestSomethingThatUsesstorage(t *testing.T) {
 //
-// 		// make and configure a mocked storage
-// 		mockedstorage := &storageMock{
-// 			GetFunc: func(name string) (string, error) {
-// 				panic("mock out the Get method")
-// 			},
-// 			NextCounterFunc: func() (uint64, error) {
-// 				panic("mock out the NextCounter method")
-// 			},
-// 			SetFunc: func(name string, value string) error {
-// 				panic("mock out the Set method")
-// 			},
-// 		}
+//		// make and configure a mocked storage
+//		mockedstorage := &storageMock{
+//			GetFunc: func(name string) (string, error) {
+//				panic("mock out the Get method")
+//			},
+//			NextCounterFunc: func() (uint64, error) {
+//				panic("mock out the NextCounter method")
+//			},
+//			SetFunc: func(name string, value string) error {
+//				panic("mock out the Set method")
+//			},
+//		}
 //
-// 		// use mockedstorage in code that requires storage
-// 		// and then make assertions.
+//		// use mockedstorage in code that requires storage
+//		// and then make assertions.
 //
-// 	}
+//	}
 type storageMock struct {
 	// GetFunc mocks the Get method.
 	GetFunc func(name string) (string, error)
@@ -140,7 +141,8 @@ func (mock *storageMock) Get(name string) (string, error) {
 
 // GetCalls gets all the calls that were made to Get.
 // Check the length with:
-//     len(mockedstorage.GetCalls())
+//
+//	len(mockedstorage.GetCalls())
 func (mock *storageMock) GetCalls() []struct {
 	Name string
 } {
@@ -168,7 +170,8 @@ func (mock *storageMock) NextCounter() (uint64, error) {
 
 // NextCounterCalls gets all the calls that were made to NextCounter.
 // Check the length with:
-//     len(mockedstorage.NextCounterCalls())
+//
+//	len(mockedstorage.NextCounterCalls())
 func (mock *storageMock) NextCounterCalls() []struct {
 } {
 	var calls []struct {
@@ -199,7 +202,8 @@ func (mock *storageMock) Set(name string, value string) error {
 
 // SetCalls gets all the calls that were made to Set.
 // Check the length with:
-//     len(mockedstorage.SetCalls())
+//
+//	len(mockedstorage.SetCalls())
 func (mock *storageMock) SetCalls() []struct {
 	Name  string
 	Value string

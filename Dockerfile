@@ -1,6 +1,5 @@
 FROM golang:1.26-alpine AS build-env
 
-ARG VERSION
 ARG COMMIT_HASH
 ARG CI
 
@@ -15,11 +14,10 @@ RUN apk add --update --no-cache build-base make git libc-dev
 RUN \
     if [ -z "$CI" ] ; then \
         echo "runs outside of CI"; \
-        VERSION=$(git rev-parse --abbrev-ref HEAD); \
         COMMIT_HASH=$(git rev-parse --short HEAD); \
     fi && \
     DATE=$(date +%FT%T%z); \
-    LDFLAGS="-s -w -X main.Version=${VERSION} -X main.CommitHash=${COMMIT_HASH} -X main.CompileDate=${DATE}"; \
+    LDFLAGS="-s -w -X main.CommitHash=${COMMIT_HASH} -X main.CompileDate=${DATE}"; \
     go build -o /go/bin/pad -ldflags "${LDFLAGS}" && \
     /go/bin/pad --version
 
