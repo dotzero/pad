@@ -1,11 +1,15 @@
 package handlers
 
 import (
+	"bytes"
 	"errors"
+	"html/template"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
 )
 
 const (
@@ -30,9 +34,20 @@ func Redirect(s storage, e encoder) http.HandlerFunc {
 
 // Get handle get specific pad
 func Get(s storage, t tpl) http.HandlerFunc {
+	return pad(s, t, "edit")
+}
+
+// Markdown handle get specific pad rendered as Markdown
+func Markdown(s storage, t tpl) http.HandlerFunc {
+	return pad(s, t, "markdown")
+}
+
+func pad(s storage, t tpl, mode string) http.HandlerFunc {
 	type data struct {
-		Padname string
-		Content string
+		Padname  string
+		Content  string
+		Markdown template.HTML
+		Mode     string
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -44,14 +59,35 @@ func Get(s storage, t tpl) http.HandlerFunc {
 			return
 		}
 
+		markdown, err := renderMarkdown(content)
+		if err != nil {
+			renderError(w, r, err)
+			return
+		}
+
 		err = t.Execute(w, data{
-			Padname: padname,
-			Content: content,
+			Padname:  padname,
+			Content:  content,
+			Markdown: markdown,
+			Mode:     mode,
 		})
 		if err != nil {
 			renderError(w, r, err)
 		}
 	}
+}
+
+func renderMarkdown(content string) (template.HTML, error) {
+	var buf bytes.Buffer
+	markdown := goldmark.New(
+		goldmark.WithExtensions(extension.Linkify),
+	)
+
+	if err := markdown.Convert([]byte(content), &buf); err != nil {
+		return "", err
+	}
+
+	return template.HTML(buf.String()), nil //nolint:gosec
 }
 
 // Raw handle get specific pad in plain text

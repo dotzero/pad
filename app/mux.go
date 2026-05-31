@@ -45,6 +45,7 @@ func (a *App) routes() chi.Router {
 
 	router.Get("/", handlers.Redirect(a.Storage, a.HashEncoder))
 	router.Get("/raw/{padname}", handlers.Raw(a.Storage))
+	router.Get("/md/{padname}", handlers.Markdown(a.Storage, a.Templates.Lookup("main.html")))
 	router.Get("/{padname}", handlers.Get(a.Storage, a.Templates.Lookup("main.html")))
 	router.Post("/{padname}", handlers.Set(a.Storage))
 

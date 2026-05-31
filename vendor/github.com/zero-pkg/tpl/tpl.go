@@ -25,6 +25,7 @@ func New() *Templates {
 // Must is a helper that wraps a call to a function returning (*Templates, error)
 // and panics if the error is non-nil. It is intended for use in variable initializations
 // such as
+//
 //	var t = tpl.Must(tpl.New().ParseDir("html", []string{".html"}))
 func Must(t *Templates, err error) *Templates {
 	if err != nil {
@@ -63,7 +64,7 @@ func (t *Templates) Funcs(funcMap template.FuncMap) *Templates {
 // the output writer.
 // A template may be executed safely in parallel, although if parallel
 // executions share a Writer the output may be interleaved.
-func (t *Templates) Execute(wr io.Writer, name string, data interface{}) error {
+func (t *Templates) Execute(wr io.Writer, name string, data any) error {
 	tpl := t.Lookup(name)
 	if tpl == nil {
 		return fmt.Errorf("template %s is not found", name)

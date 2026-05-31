@@ -60,7 +60,7 @@ func parseDir(dir string, exts ...string) (map[string]*tplFile, error) {
 }
 
 func parseFile(dir string, file string) (*tplFile, error) {
-	body, err := os.ReadFile(file)
+	body, err := os.ReadFile(file) //nolint:gosec
 	if err != nil {
 		return nil, err
 	}

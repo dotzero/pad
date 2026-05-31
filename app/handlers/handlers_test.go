@@ -55,6 +55,31 @@ func TestHandleGet(t *testing.T) {
 	is.True(strings.Contains(w.Body.String(), "foobar"))
 }
 
+func TestHandleMarkdown(t *testing.T) {
+	is := is.New(t)
+	s := &storageMock{
+		GetFunc: func(name string) (string, error) {
+			return "# Title\n\nhttps://example.com\n\n<script>alert(1)</script>", nil
+		},
+	}
+
+	tpl := template.Must(template.New("").Parse("{{ .Padname }}{{ .Markdown }}{{ .Mode }}"))
+
+	handler := Markdown(s, tpl)
+
+	router := chi.NewRouter()
+	router.Get("/md/{padname}", handler)
+
+	w, err := testRequest(router, "GET", "/md/foo", "")
+	is.NoErr(err)
+	is.Equal(w.Code, http.StatusOK)
+	is.True(strings.Contains(w.Body.String(), "foo"))
+	is.True(strings.Contains(w.Body.String(), "<h1>Title</h1>"))
+	is.True(strings.Contains(w.Body.String(), `<a href="https://example.com">https://example.com</a>`))
+	is.True(!strings.Contains(w.Body.String(), "<script>alert(1)</script>"))
+	is.True(strings.Contains(w.Body.String(), "markdown"))
+}
+
 func TestHandleRaw(t *testing.T) {
 	is := is.New(t)
 	s := &storageMock{

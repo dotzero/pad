@@ -1,8 +1,8 @@
 # github.com/ajg/form v1.5.1
 ## explicit
 github.com/ajg/form
-# github.com/go-chi/chi/v5 v5.2.5
-## explicit; go 1.22
+# github.com/go-chi/chi/v5 v5.3.0
+## explicit; go 1.23
 github.com/go-chi/chi/v5
 github.com/go-chi/chi/v5/middleware
 # github.com/go-chi/render v1.0.3
@@ -20,8 +20,19 @@ github.com/matryer/is
 # github.com/speps/go-hashids/v2 v2.0.1
 ## explicit; go 1.14
 github.com/speps/go-hashids/v2
-# github.com/zero-pkg/tpl v1.0.0
-## explicit; go 1.17
+# github.com/yuin/goldmark v1.8.2
+## explicit; go 1.22
+github.com/yuin/goldmark
+github.com/yuin/goldmark/ast
+github.com/yuin/goldmark/extension
+github.com/yuin/goldmark/extension/ast
+github.com/yuin/goldmark/parser
+github.com/yuin/goldmark/renderer
+github.com/yuin/goldmark/renderer/html
+github.com/yuin/goldmark/text
+github.com/yuin/goldmark/util
+# github.com/zero-pkg/tpl v1.1.0
+## explicit; go 1.26
 github.com/zero-pkg/tpl
 # go.etcd.io/bbolt v1.4.3
 ## explicit; go 1.23

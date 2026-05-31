@@ -70,4 +70,85 @@
     font: normal 12px Monaco, "Courier New", monospace;
     line-height: 18px;
   }
+
+  .markdown-content {
+    color: #3a3b3c;
+    font: normal 15px Arial, Helvetica, sans-serif;
+    line-height: 22px;
+  }
+
+  .markdown-content h1,
+  .markdown-content h2,
+  .markdown-content h3 {
+    color: #242628;
+    font-weight: 700;
+    line-height: 1.25;
+    margin: 0 0 12px;
+  }
+
+  .markdown-content h1 {
+    font-size: 26px;
+  }
+
+  .markdown-content h2 {
+    font-size: 22px;
+  }
+
+  .markdown-content h3 {
+    font-size: 18px;
+  }
+
+  .markdown-content p,
+  .markdown-content ul,
+  .markdown-content ol,
+  .markdown-content blockquote,
+  .markdown-content pre {
+    margin: 0 0 14px;
+  }
+
+  .markdown-content ul,
+  .markdown-content ol {
+    padding-left: 24px;
+  }
+
+  .markdown-content ul {
+    list-style: disc;
+  }
+
+  .markdown-content ol {
+    list-style: decimal;
+  }
+
+  .markdown-content a {
+    color: #245c9c;
+    text-decoration: underline;
+  }
+
+  .markdown-content code {
+    background: #eef2f6;
+    border: 1px solid #dfe4ea;
+    border-radius: 3px;
+    font: normal 12px Monaco, "Courier New", monospace;
+    padding: 1px 4px;
+  }
+
+  .markdown-content pre {
+    background: #f6f8fa;
+    border: 1px solid #dfe4ea;
+    border-radius: 3px;
+    overflow-x: auto;
+    padding: 12px;
+  }
+
+  .markdown-content pre code {
+    background: transparent;
+    border: 0;
+    padding: 0;
+  }
+
+  .markdown-content blockquote {
+    border-left: 3px solid #d5d9df;
+    color: #666b70;
+    padding-left: 12px;
+  }
 }
