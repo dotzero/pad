@@ -16,7 +16,11 @@
             <button type="button" id="paste_button" class="min-h-[42px] min-w-0 cursor-pointer rounded-[10px] border border-[#cfd5dc] bg-[#f7f9fb] px-4 py-0 font-sans text-sm font-normal text-[#3a3b3c] [-webkit-tap-highlight-color:transparent] active:bg-[#e9edf2] max-[640px]:min-h-[46px] max-[640px]:w-full max-[640px]:px-3 max-[640px]:text-[15px]">Paste</button>
         </div>
     </div>
-    <div class="stack absolute bottom-[45px] left-[30px] right-[30px] top-[30px] rounded-[3px] shadow-[0_0_9px_rgba(121,126,133,0.15)] max-[640px]:bottom-6 max-[640px]:left-4 max-[640px]:right-4 max-[640px]:top-[82px]">
+    <div class="absolute right-[30px] top-[15px] z-[2] inline-flex overflow-hidden rounded-[8px] border border-[#cfd5dc] bg-[#f7f9fb] shadow-[0_1px_2px_rgba(80,83,87,0.12)] max-[640px]:right-4 max-[640px]:top-[74px]">
+        <a href="/{{ .Padname }}" class="border-r border-[#cfd5dc] bg-[#e9edf2] px-4 py-2 font-sans text-sm font-normal leading-5 text-[#3a3b3c] max-[640px]:px-3 max-[640px]:text-[15px]">Edit</a>
+        <a href="/raw/{{ .Padname }}" class="px-4 py-2 font-sans text-sm font-normal leading-5 text-[#3a3b3c] hover:bg-[#eef2f6] active:bg-[#e9edf2] max-[640px]:px-3 max-[640px]:text-[15px]">Raw</a>
+    </div>
+    <div class="stack absolute bottom-[45px] left-[30px] right-[30px] top-[61px] rounded-[3px] shadow-[0_0_9px_rgba(121,126,133,0.15)] max-[640px]:bottom-6 max-[640px]:left-4 max-[640px]:right-4 max-[640px]:top-[120px]">
         <div class="absolute -top-0.5 bottom-0 left-0 right-0 rounded-[3px] bg-[#fdfeff] shadow-[0_1px_2px_rgba(80,83,87,0.25)]">
             <div class="absolute -top-px bottom-0.5 -left-0.5 -right-0.5 rounded-[3px] bg-[#fdfeff] shadow-[0_1px_0_rgba(61,64,67,0.2)]">
                 <div class="absolute bottom-px -left-0.5 -right-0.5 top-0 rounded-[3px] border border-[#dcdde1] bg-[#fdfeff] px-5 py-[18px] font-sans text-[15px] font-normal leading-5 text-[#3a3b3c] max-[640px]:px-3.5 max-[640px]:pb-4 max-[640px]:pt-3.5">
