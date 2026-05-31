@@ -90,6 +90,48 @@ func TestGetNotExists(t *testing.T) {
 	is.Equal("", act)
 }
 
+func TestCleanup(t *testing.T) {
+	backend := newTestBackend()
+	defer backend.db.Close()
+
+	is := is.New(t)
+
+	is.NoErr(backend.Set("empty-a", ""))
+	is.NoErr(backend.Set("empty-b", ""))
+	is.NoErr(backend.Set("space", " \n\t"))
+	is.NoErr(backend.Set("filled", "content"))
+
+	deleted, err := backend.Cleanup()
+	is.NoErr(err)
+	is.Equal(3, deleted)
+
+	emptyA, err := backend.Get("empty-a")
+	is.NoErr(err)
+	is.Equal("", emptyA)
+
+	emptyB, err := backend.Get("empty-b")
+	is.NoErr(err)
+	is.Equal("", emptyB)
+
+	space, err := backend.Get("space")
+	is.NoErr(err)
+	is.Equal("", space)
+
+	filled, err := backend.Get("filled")
+	is.NoErr(err)
+	is.Equal("content", filled)
+
+	err = backend.db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(backend.bucketPads)
+		is.Equal([]byte(nil), b.Get([]byte("empty-a")))
+		is.Equal([]byte(nil), b.Get([]byte("empty-b")))
+		is.Equal([]byte(nil), b.Get([]byte("space")))
+
+		return nil
+	})
+	is.NoErr(err)
+}
+
 func TestNextCounter(t *testing.T) {
 	backend := newTestBackend()
 	defer backend.db.Close()

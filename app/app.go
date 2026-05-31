@@ -55,6 +55,7 @@ func (a *App) Run(ctx context.Context, address string, port int) error {
 	defer stop()
 
 	a.httpServer = a.makeHTTPServer(address, port, a.routes())
+	go a.cleanup(ctx, time.Hour)
 
 	go func() {
 		addr := fmt.Sprintf("%s:%d", address, port)
@@ -75,6 +76,28 @@ func (a *App) Run(ctx context.Context, address string, port int) error {
 	defer cancel()
 
 	return a.httpServer.Shutdown(timeoutCtx)
+}
+
+func (a *App) cleanup(ctx context.Context, interval time.Duration) {
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+			deleted, err := a.Storage.Cleanup()
+			if err != nil {
+				log.Printf("[ERROR] failed to cleanup empty pads, %+v", err)
+				continue
+			}
+
+			if deleted > 0 {
+				log.Printf("[INFO] deleted %d empty pads", deleted)
+			}
+		}
+	}
 }
 
 // setupDataStore initializes BoltDB store

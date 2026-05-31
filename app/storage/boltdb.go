@@ -3,6 +3,7 @@ package storage
 import (
 	"encoding/binary"
 	"path/filepath"
+	"strings"
 
 	bolt "go.etcd.io/bbolt"
 )
@@ -52,7 +53,7 @@ func (s *BoltStorage) Get(name string) (value string, err error) {
 	return value, s.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(s.bucketPads)
 		v := b.Get([]byte(name))
-		value = string(v)
+		value = strings.TrimSpace(string(v))
 
 		return nil
 	})
@@ -64,6 +65,28 @@ func (s *BoltStorage) Set(name string, value string) error {
 		b := tx.Bucket(s.bucketPads)
 
 		return b.Put([]byte(name), []byte(value))
+	})
+}
+
+// Cleanup removes pads without content and returns the number of deleted records.
+func (s *BoltStorage) Cleanup() (deleted int, err error) {
+	return deleted, s.db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket(s.bucketPads)
+		c := b.Cursor()
+
+		for key, value := c.First(); key != nil; key, value = c.Next() {
+			if strings.TrimSpace(string(value)) != "" {
+				continue
+			}
+
+			if err := c.Delete(); err != nil {
+				return err
+			}
+
+			deleted++
+		}
+
+		return nil
 	})
 }
 
