@@ -1,11 +1,19 @@
 # Pad
 
-[![build](https://github.com/dotzero/pad/actions/workflows/ci.yml/badge.svg)](https://github.com/dotzero/pad/actions/workflows/ci.yml)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/dotzero/pad/blob/master/LICENSE)
+A dead-simple shared text pad.
 
-Pad is a standalone version of Cloud Notepad that lets you share text through unique links.
+Paste text, get a link, share it with anyone.
 
-Data is stored in [BoltDB](https://github.com/etcd-io/bbolt) files under `BOLT_PATH`.
+> Unlike pastebin-like services, every shared page remains editable, making Pad feel more like a lightweight internet clipboard than a publishing platform. No accounts, no permissions, no formatting controls, and no unnecessary features.
+
+Just write, copy the URL, and send it to whoever needs the information.
+
+## Features
+
+* Instant text sharing via unique URLs
+* No registration or login
+* Minimalist interface focused entirely on content
+* Works as a personal or shared internet clipboard
 
 ![](./static/images/screenshot.png)
 

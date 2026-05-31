@@ -32,23 +32,29 @@ func (a *App) routes() chi.Router {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.RedirectSlashes)
 
+	router.Get("/robots.txt", func(w http.ResponseWriter, r *http.Request) {
+		render.PlainText(w, r, "User-agent: *\n")
+	})
+
+	favicon := faviconHandler(a.StaticPath)
+	router.Get("/favicon.ico", favicon)
+	router.Get("/favicon.png", favicon)
+
+	// file server for static content from /assets
+	fileServer(router, "/assets", http.Dir(a.StaticPath))
+
 	router.Get("/", handlers.Redirect(a.Storage, a.HashEncoder))
 	router.Get("/raw/{padname}", handlers.Raw(a.Storage))
 	router.Get("/{padname}", handlers.Get(a.Storage, a.Templates.Lookup("main.html")))
 	router.Post("/{padname}", handlers.Set(a.Storage))
 
-	router.Get("/robots.txt", func(w http.ResponseWriter, r *http.Request) {
-		render.PlainText(w, r, "User-agent: *\n")
-	})
-
-	router.Get("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, filepath.Join(a.StaticPath, "/favicon.ico"))
-	})
-
-	// file server for static content from /assets
-	fileServer(router, "/assets", http.Dir(a.StaticPath))
-
 	return router
+}
+
+func faviconHandler(staticPath string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, filepath.Join(staticPath, "favicon.png"))
+	}
 }
 
 func fileServer(r chi.Router, path string, root http.FileSystem) {
