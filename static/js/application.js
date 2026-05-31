@@ -3,27 +3,36 @@ $(function() {
       $printarea = $('#printable_contents'),
       $loading = $("#loading"),
       $copyButton = $("#copy_button"),
+      $copyLinkButton = $("#copy_link_button"),
       $pasteButton = $("#paste_button"),
       content = $textarea.val();
-
-  function selectAllContents() {
-    var textarea = $textarea.get(0);
-
-    $textarea.trigger("focus");
-    textarea.setSelectionRange(0, textarea.value.length);
-  }
 
   async function copyContents() {
     var text = $textarea.val();
 
+    await copyText(text);
+  }
+
+  async function copyText(text) {
     if (navigator.clipboard && window.isSecureContext) {
       await navigator.clipboard.writeText(text);
       return;
     }
 
-    // fallback for older browsers
-    selectAllContents();
+    var textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
     document.execCommand("copy");
+    document.body.removeChild(textarea);
+  }
+
+  async function copyCurrentLink() {
+    await copyText(window.location.href);
   }
 
   async function pasteContents() {
@@ -40,6 +49,10 @@ $(function() {
 
   $copyButton.on("click", function() {
     copyContents().catch(function() {});
+  });
+
+  $copyLinkButton.on("click", function() {
+    copyCurrentLink().catch(function() {});
   });
 
   $pasteButton.on("click", function() {

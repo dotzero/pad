@@ -17,6 +17,12 @@
         </div>
     </div>
     <div class="absolute right-[30px] top-[15px] z-[2] inline-flex overflow-hidden rounded-[8px] border border-[#cfd5dc] bg-[#f7f9fb] shadow-[0_1px_2px_rgba(80,83,87,0.12)] max-[640px]:right-4 max-[640px]:top-[74px]">
+        <button type="button" id="copy_link_button" class="flex min-w-10 items-center justify-center border-r border-[#cfd5dc] px-3 py-2 text-[#3a3b3c] hover:bg-[#eef2f6] active:bg-[#e9edf2] max-[640px]:px-2.5" aria-label="Copy page link" title="Copy page link">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M10 13a5 5 0 0 0 7.1 0l2.8-2.8a5 5 0 0 0-7.1-7.1l-1.6 1.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M14 11a5 5 0 0 0-7.1 0l-2.8 2.8a5 5 0 0 0 7.1 7.1l1.6-1.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+        </button>
         <a href="/{{ .Padname }}" class="border-r border-[#cfd5dc] px-4 py-2 font-sans text-sm font-normal leading-5 text-[#3a3b3c] hover:bg-[#eef2f6] active:bg-[#e9edf2] max-[640px]:px-3 max-[640px]:text-[15px] {{ if eq .Mode "edit" }}bg-[#e9edf2]{{ end }}">Edit</a>
         <a href="/md/{{ .Padname }}" class="border-r border-[#cfd5dc] px-4 py-2 font-sans text-sm font-normal leading-5 text-[#3a3b3c] hover:bg-[#eef2f6] active:bg-[#e9edf2] max-[640px]:px-3 max-[640px]:text-[15px] {{ if eq .Mode "markdown" }}bg-[#e9edf2]{{ end }}">Markdown</a>
         <a href="/raw/{{ .Padname }}" class="px-4 py-2 font-sans text-sm font-normal leading-5 text-[#3a3b3c] hover:bg-[#eef2f6] active:bg-[#e9edf2] max-[640px]:px-3 max-[640px]:text-[15px]">Raw</a>
