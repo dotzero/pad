@@ -55,11 +55,6 @@
 }
 
 @layer components {
-  #loading {
-    background: url("../images/loading.gif") -1px -4px no-repeat transparent;
-    filter: alpha(opacity=40);
-  }
-
   .stack.empty .pad-contents {
     text-align: center;
     font: normal 18px Arial, sans-serif;

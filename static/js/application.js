@@ -1,16 +1,38 @@
 $(function() {
   var $textarea = $("#contents"),
       $printarea = $('#printable_contents'),
-      $loading = $("#loading"),
+      $toast = $("#toast"),
       $copyButton = $("#copy_button"),
       $copyLinkButton = $("#copy_link_button"),
-      $pasteButton = $("#paste_button"),
-      content = $textarea.val();
+      content = $textarea.val(),
+      toastTimeout,
+      toastHideTimeout;
+
+  function showToast(message) {
+    clearTimeout(toastTimeout);
+    clearTimeout(toastHideTimeout);
+
+    $toast
+      .text(message)
+      .removeClass("hidden opacity-0")
+      .addClass("opacity-100");
+
+    toastTimeout = setTimeout(function() {
+      $toast
+        .removeClass("opacity-100")
+        .addClass("opacity-0");
+
+      toastHideTimeout = setTimeout(function() {
+        $toast.addClass("hidden");
+      }, 200);
+    }, 1600);
+  }
 
   async function copyContents() {
     var text = $textarea.val();
 
     await copyText(text);
+    showToast("Text copied");
   }
 
   async function copyText(text) {
@@ -33,18 +55,7 @@ $(function() {
 
   async function copyCurrentLink() {
     await copyText(window.location.href);
-  }
-
-  async function pasteContents() {
-    if (navigator.clipboard && window.isSecureContext) {
-      $textarea.val(await navigator.clipboard.readText());
-      return;
-    }
-
-    // fallback for older browsers
-    $textarea.focus();
-    $textarea.setSelectionRange(0, $textarea.value.length);
-    document.execCommand("paste");
+    showToast("Link copied");
   }
 
   $copyButton.on("click", function() {
@@ -55,20 +66,13 @@ $(function() {
     copyCurrentLink().catch(function() {});
   });
 
-  $pasteButton.on("click", function() {
-    pasteContents().catch(function() {});
-  });
-
   $printarea.text(content);
 
   setInterval(function() {
     if (content !== $textarea.val()) {
       content = $textarea.val();
 
-      $loading.show();
-      $.post('', { t: content }).always(function() {
-        $loading.hide();
-      });
+      $.post('', { t: content });
 
       $printarea.text(content);
     }

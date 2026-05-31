@@ -10,24 +10,26 @@
     <link href="/assets/css/print.css" rel="stylesheet" media="print" />
 </head>
 <body class="m-0 min-h-screen overflow-x-hidden bg-[#ebeef2] bg-[url('/assets/images/bg.png')] bg-left-top bg-repeat p-0 font-sans text-sm font-normal text-[#b7bdc3]">
-    <div class="hidden max-[640px]:absolute max-[640px]:left-4 max-[640px]:right-4 max-[640px]:top-[18px] max-[640px]:z-[2] max-[640px]:block">
-        <div class="grid grid-cols-2 gap-2.5 max-[640px]:gap-2">
-            <button type="button" id="copy_button" class="min-h-[42px] min-w-0 cursor-pointer rounded-[10px] border border-[#cfd5dc] bg-[#f7f9fb] px-4 py-0 font-sans text-sm font-normal text-[#3a3b3c] [-webkit-tap-highlight-color:transparent] active:bg-[#e9edf2] max-[640px]:min-h-[46px] max-[640px]:w-full max-[640px]:px-3 max-[640px]:text-[15px]">Copy</button>
-            <button type="button" id="paste_button" class="min-h-[42px] min-w-0 cursor-pointer rounded-[10px] border border-[#cfd5dc] bg-[#f7f9fb] px-4 py-0 font-sans text-sm font-normal text-[#3a3b3c] [-webkit-tap-highlight-color:transparent] active:bg-[#e9edf2] max-[640px]:min-h-[46px] max-[640px]:w-full max-[640px]:px-3 max-[640px]:text-[15px]">Paste</button>
-        </div>
+    <div class="hidden overflow-hidden rounded-[8px] border border-[#cfd5dc] bg-[#f7f9fb] shadow-[0_1px_2px_rgba(80,83,87,0.12)] max-[640px]:absolute max-[640px]:left-4 max-[640px]:top-[18px] max-[640px]:z-[2] max-[640px]:inline-flex">
+        <button type="button" id="copy_button" class="flex min-w-10 items-center justify-center px-3 py-2 text-[#3a3b3c] hover:bg-[#eef2f6] active:bg-[#e9edf2] max-[640px]:px-2.5" aria-label="Copy text" title="Copy text">
+            <svg class="h-5 w-5 max-[640px]:h-6 max-[640px]:w-6" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="9" y="9" width="11" height="11" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+        </button>
     </div>
-    <div class="absolute right-[30px] top-[15px] z-[2] inline-flex overflow-hidden rounded-[8px] border border-[#cfd5dc] bg-[#f7f9fb] shadow-[0_1px_2px_rgba(80,83,87,0.12)] max-[640px]:right-4 max-[640px]:top-[74px]">
-        <button type="button" id="copy_link_button" class="flex min-w-10 items-center justify-center border-r border-[#cfd5dc] px-3 py-2 text-[#3a3b3c] hover:bg-[#eef2f6] active:bg-[#e9edf2] max-[640px]:px-2.5" aria-label="Copy page link" title="Copy page link">
-            <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
+    <div class="absolute right-[30px] top-[15px] z-[2] inline-flex overflow-hidden rounded-[8px] border border-[#cfd5dc] bg-[#f7f9fb] shadow-[0_1px_2px_rgba(80,83,87,0.12)] max-[640px]:right-4 max-[640px]:top-[18px]">
+        <button type="button" id="copy_link_button" class="flex min-w-10 items-center justify-center border-r border-[#cfd5dc] px-3 py-2 text-[#3a3b3c] hover:bg-[#eef2f6] active:bg-[#e9edf2] max-[640px]:min-w-8 max-[640px]:px-1.5" aria-label="Copy page link" title="Copy page link">
+            <svg class="h-5 w-5 max-[640px]:h-6 max-[640px]:w-6" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M10 13a5 5 0 0 0 7.1 0l2.8-2.8a5 5 0 0 0-7.1-7.1l-1.6 1.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                 <path d="M14 11a5 5 0 0 0-7.1 0l-2.8 2.8a5 5 0 0 0 7.1 7.1l1.6-1.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
         </button>
-        <a href="/{{ .Padname }}" class="border-r border-[#cfd5dc] px-4 py-2 font-sans text-sm font-normal leading-5 text-[#3a3b3c] hover:bg-[#eef2f6] active:bg-[#e9edf2] max-[640px]:px-3 max-[640px]:text-[15px] {{ if eq .Mode "edit" }}bg-[#e9edf2]{{ end }}">Edit</a>
-        <a href="/md/{{ .Padname }}" class="border-r border-[#cfd5dc] px-4 py-2 font-sans text-sm font-normal leading-5 text-[#3a3b3c] hover:bg-[#eef2f6] active:bg-[#e9edf2] max-[640px]:px-3 max-[640px]:text-[15px] {{ if eq .Mode "markdown" }}bg-[#e9edf2]{{ end }}">Markdown</a>
-        <a href="/raw/{{ .Padname }}" class="px-4 py-2 font-sans text-sm font-normal leading-5 text-[#3a3b3c] hover:bg-[#eef2f6] active:bg-[#e9edf2] max-[640px]:px-3 max-[640px]:text-[15px]">Raw</a>
+        <a href="/{{ .Padname }}" class="border-r border-[#cfd5dc] px-4 py-2 font-sans text-sm font-normal leading-5 text-[#3a3b3c] hover:bg-[#eef2f6] active:bg-[#e9edf2] max-[640px]:px-1.5 max-[640px]:text-xs {{ if eq .Mode "edit" }}bg-[#e9edf2]{{ end }}">Edit</a>
+        <a href="/md/{{ .Padname }}" class="border-r border-[#cfd5dc] px-4 py-2 font-sans text-sm font-normal leading-5 text-[#3a3b3c] hover:bg-[#eef2f6] active:bg-[#e9edf2] max-[640px]:px-1.5 max-[640px]:text-xs {{ if eq .Mode "markdown" }}bg-[#e9edf2]{{ end }}">Markdown</a>
+        <a href="/raw/{{ .Padname }}" class="px-4 py-2 font-sans text-sm font-normal leading-5 text-[#3a3b3c] hover:bg-[#eef2f6] active:bg-[#e9edf2] max-[640px]:px-1.5 max-[640px]:text-xs">Raw</a>
     </div>
-    <div class="stack absolute bottom-[45px] left-[30px] right-[30px] top-[61px] rounded-[3px] shadow-[0_0_9px_rgba(121,126,133,0.15)] max-[640px]:bottom-6 max-[640px]:left-4 max-[640px]:right-4 max-[640px]:top-[120px]">
+    <div class="stack absolute bottom-[45px] left-[30px] right-[30px] top-[61px] rounded-[3px] shadow-[0_0_9px_rgba(121,126,133,0.15)] max-[640px]:bottom-6 max-[640px]:left-4 max-[640px]:right-4 max-[640px]:top-[74px]">
         <div class="absolute -top-0.5 bottom-0 left-0 right-0 rounded-[3px] bg-[#fdfeff] shadow-[0_1px_2px_rgba(80,83,87,0.25)]">
             <div class="absolute -top-px bottom-0.5 -left-0.5 -right-0.5 rounded-[3px] bg-[#fdfeff] shadow-[0_1px_0_rgba(61,64,67,0.2)]">
                 <div class="absolute bottom-px -left-0.5 -right-0.5 top-0 rounded-[3px] border border-[#dcdde1] bg-[#fdfeff] px-5 py-[18px] font-sans text-[15px] font-normal leading-5 text-[#3a3b3c] max-[640px]:px-3.5 max-[640px]:pb-4 max-[640px]:pt-3.5">
@@ -42,7 +44,7 @@
         </div>
     </div>
     <div id="printable_contents" class="pad-contents hidden"></div>
-    <div id="loading" class="absolute left-[30px] top-3 hidden h-[7px] w-3.5 rounded-px border border-[#9ba0a5] opacity-40 transition-opacity duration-1000 ease-linear max-[640px]:left-[18px] max-[640px]:top-3.5"></div>
+    <div id="toast" class="pointer-events-none fixed left-1/2 top-4 z-10 hidden -translate-x-1/2 rounded-[8px] bg-[#242628]/80 px-4 py-2 font-sans text-sm font-normal text-white shadow-[0_2px_8px_rgba(36,38,40,0.2)] transition-opacity duration-200 ease-linear max-[640px]:top-3"></div>
 
     <script src="https://code.jquery.com/jquery.min.js"></script>
     <script src="/assets/js/application.js"></script>
