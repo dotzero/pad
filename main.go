@@ -26,13 +26,13 @@ var (
 type Opts struct {
 	Host       string `long:"host" env:"PAD_HOST" default:"0.0.0.0" description:"listening address"`
 	Port       int    `long:"port" env:"PAD_PORT" default:"8080" description:"listening port"`
-	BoltPath   string `long:"bolt-path" env:"BOLT_PATH" default:"./var" description:"parent directory for the bolt files"`
-	SecretKey  string `long:"secret" env:"PAD_SECRET" description:"the shared secret key used to generate ids"`
-	StaticPath string `long:"static-path" env:"STATIC_PATH" default:"./static" description:"path to website assets"`
-	TmlPath    string `long:"tpl-path" env:"TPL_PATH" default:"./templates" description:"path to templates files"`
-	TplExt     string `long:"tpl-ext" env:"TPL_EXT" default:".html" description:"templates files extensions"`
-	Verbose    bool   `long:"verbose" description:"verbose logging"`
-	Version    bool   `short:"v" long:"version" description:"show the version number"`
+	BoltPath   string `long:"bolt-path" env:"BOLT_PATH" default:"./var" description:"BoltDB data directory"`
+	SecretKey  string `long:"secret" env:"PAD_SECRET" description:"shared secret key used to generate IDs"`
+	StaticPath string `long:"static-path" env:"STATIC_PATH" default:"./static" description:"path to static assets"`
+	TmlPath    string `long:"tpl-path" env:"TPL_PATH" default:"./templates" description:"path to template files"`
+	TplExt     string `long:"tpl-ext" env:"TPL_EXT" default:".html" description:"template file extension"`
+	Verbose    bool   `long:"verbose" description:"enable verbose logging"`
+	Version    bool   `short:"v" long:"version" description:"show version information"`
 }
 
 func main() {

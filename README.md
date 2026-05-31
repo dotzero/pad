@@ -22,10 +22,10 @@ Just write, copy the URL, and send it to whoever needs the information.
 ## Run with Docker
 
 ```bash
-docker run -d --rm --name pad -p "8080:8080" dotzero/pad
+docker run -d --rm --name pad -p "8080:8080" ghcr.io/dotzero/pad:latest
 ```
 
-### Run with Docker Compose
+## Run with Docker Compose
 
 Create a `docker-compose.yml` file:
 
@@ -34,13 +34,7 @@ version: "3"
 services:
   pad:
     image: ghcr.io/dotzero/pad:latest
-    container_name: pad
-    restart: always
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
+    restart: unless-stopped
     ports:
       - "8080:8080"
     environment:
@@ -55,12 +49,6 @@ volumes:
 ```
 
 Run `docker compose up -d`, wait for the container to start, then open `http://localhost:8080`.
-
-### Build the container image
-
-```bash
-docker build -t dotzero/pad .
-```
 
 ## Run locally
 
@@ -79,27 +67,17 @@ Usage:
 Application Options:
       --host=        listening address (default: 0.0.0.0) [$PAD_HOST]
       --port=        listening port (default: 8080) [$PAD_PORT]
-      --bolt-path=   parent directory for the bolt files (default: ./var) [$BOLT_PATH]
-      --secret=      the shared secret key used to generate ids [$PAD_SECRET]
-      --static-path= path to website assets (default: ./static) [$STATIC_PATH]
-      --tpl-path=    path to templates files (default: ./templates) [$TPL_PATH]
-      --tpl-ext=     templates files extensions (default: .html) [$TPL_EXT]
-      --verbose      verbose logging
-  -v, --version      show the version number
+      --bolt-path=   BoltDB data directory (default: ./var) [$BOLT_PATH]
+      --secret=      shared secret key used to generate IDs [$PAD_SECRET]
+      --static-path= path to static assets (default: ./static) [$STATIC_PATH]
+      --tpl-path=    path to template files (default: ./templates) [$TPL_PATH]
+      --tpl-ext=     template file extension (default: .html) [$TPL_EXT]
+      --verbose      enable verbose logging
+  -v, --version      show version information
 
 Help Options:
   -h, --help         Show this help message
 ```
-
-### Environment variables
-
-- `PAD_HOST` (default: `0.0.0.0`) - Listening address.
-- `PAD_PORT` (default: `8080`) - Listening port.
-- `BOLT_PATH` (default: `./var`) - Path to the BoltDB data directory.
-- `PAD_SECRET` (default: empty) - Salt used to generate hashids. Replace it with your own secret in production.
-- `STATIC_PATH` (default: `./static`) - Path to static assets.
-- `TPL_PATH` (default: `./templates`) - Path to template files.
-- `TPL_EXT` (default: `.html`) - Template file extension.
 
 ## License
 
