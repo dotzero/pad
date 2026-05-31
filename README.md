@@ -15,7 +15,7 @@ Unlike pastebin-like services, every shared page remains editable, making Pad fe
 * 🧘 Minimalist interface focused entirely on content
 * 🌐 Works as a personal or shared internet clipboard
 
-![](./static/images/screenshot.png)
+![](./static/screenshot.png)
 
 ## Run with Docker
 
